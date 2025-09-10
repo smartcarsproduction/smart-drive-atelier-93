@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+    <style>
+        body { background: red; color: white; padding: 20px; }
+        .test-box { background: blue; padding: 20px; margin: 20px; color: yellow; }
+    </style>
+</head>
+<body>
+    <h1>Visibility Test</h1>
+    <div class="test-box">If you can see this, basic HTML/CSS is working</div>
+    <p>Current time: <span id="time"></span></p>
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleTimeString();
+        console.log('Test page loaded successfully');
+    </script>
+</body>
+</html>
