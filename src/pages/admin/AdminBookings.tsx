@@ -5,12 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Calendar, Search, Plus, Clock, Car, User } from "lucide-react";
 
 const AdminBookings = () => {
-  const bookings = [
-    { id: "SC-001234", customer: "John Smith", service: "AI Diagnostics", date: "Dec 15, 2024", time: "10:00 AM", vehicle: "Tesla Model S", status: "Confirmed" },
-    { id: "SC-001235", customer: "Sarah Johnson", service: "Engine Rebuild", date: "Dec 16, 2024", time: "2:00 PM", vehicle: "BMW M3", status: "In Progress" },
-    { id: "SC-001236", customer: "Michael Chen", service: "Smart Customization", date: "Dec 17, 2024", time: "9:00 AM", vehicle: "Audi RS6", status: "Pending" },
-    { id: "SC-001237", customer: "Emma Davis", service: "Predictive Maintenance", date: "Dec 18, 2024", time: "11:30 AM", vehicle: "Mercedes AMG", status: "Confirmed" },
-  ];
+  const bookings: Array<{
+    id: string;
+    customer: string;
+    service: string;
+    date: string;
+    time: string;
+    vehicle: string;
+    status: string;
+  }> = [];
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -43,47 +46,59 @@ const AdminBookings = () => {
         <div className="p-4 sm:p-6">
           <h2 className="font-luxury text-lg sm:text-xl font-bold text-primary mb-4">Service Appointments</h2>
           <div className="space-y-3 sm:space-y-4">
-            {bookings.map((booking) => (
-              <div key={booking.id} className="p-4 bg-card-luxury rounded-luxury hover:shadow-elegant transition-luxury">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                  <div className="flex items-start sm:items-center space-x-3 sm:space-x-4 flex-1">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-luxury rounded-full flex items-center justify-center flex-shrink-0">
-                      <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-medium text-primary mb-2 text-sm sm:text-base">{booking.service}</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-x-6 text-xs sm:text-sm text-muted-foreground">
-                        <div className="flex items-center space-x-1 truncate">
-                          <User className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">{booking.customer}</span>
-                        </div>
-                        <div className="flex items-center space-x-1 truncate">
-                          <Car className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">{booking.vehicle}</span>
-                        </div>
-                        <div className="flex items-center space-x-1 truncate">
-                          <Calendar className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">{booking.date}</span>
-                        </div>
-                        <div className="flex items-center space-x-1 truncate">
-                          <Clock className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">{booking.time}</span>
+            {bookings.length > 0 ? (
+              bookings.map((booking) => (
+                <div key={booking.id} className="p-4 bg-card-luxury rounded-luxury hover:shadow-elegant transition-luxury">
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div className="flex items-start sm:items-center space-x-3 sm:space-x-4 flex-1">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-luxury rounded-full flex items-center justify-center flex-shrink-0">
+                        <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-medium text-primary mb-2 text-sm sm:text-base">{booking.service}</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-x-6 text-xs sm:text-sm text-muted-foreground">
+                          <div className="flex items-center space-x-1 truncate">
+                            <User className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{booking.customer}</span>
+                          </div>
+                          <div className="flex items-center space-x-1 truncate">
+                            <Car className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{booking.vehicle}</span>
+                          </div>
+                          <div className="flex items-center space-x-1 truncate">
+                            <Calendar className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{booking.date}</span>
+                          </div>
+                          <div className="flex items-center space-x-1 truncate">
+                            <Clock className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{booking.time}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center justify-between sm:justify-end space-x-3 sm:space-x-4 flex-shrink-0">
-                    <Badge 
-                      variant={booking.status === 'Confirmed' ? 'default' : booking.status === 'In Progress' ? 'secondary' : 'outline'}
-                      className="text-xs"
-                    >
-                      {booking.status}
-                    </Badge>
-                    <Button variant="ghost" size="sm" className="text-xs sm:text-sm">Manage</Button>
+                    <div className="flex items-center justify-between sm:justify-end space-x-3 sm:space-x-4 flex-shrink-0">
+                      <Badge 
+                        variant={booking.status === 'Confirmed' ? 'default' : booking.status === 'In Progress' ? 'secondary' : 'outline'}
+                        className="text-xs"
+                      >
+                        {booking.status}
+                      </Badge>
+                      <Button variant="ghost" size="sm" className="text-xs sm:text-sm">Manage</Button>
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <Calendar className="w-16 h-16 text-accent mx-auto mb-4" />
+                <p className="text-lg text-muted-foreground mb-2">No bookings found</p>
+                <p className="text-sm text-muted-foreground mb-6">Service appointments will appear here when customers book</p>
+                <Button variant="luxury">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create New Booking
+                </Button>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </Card>
