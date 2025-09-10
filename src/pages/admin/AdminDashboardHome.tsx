@@ -16,23 +16,20 @@ import {
 } from "lucide-react";
 
 const AdminDashboardHome = () => {
-  const stats = [
-    { label: "Total Customers", value: "1,247", icon: Users, change: "+12%" },
-    { label: "Active Bookings", value: "89", icon: Calendar, change: "+8%" },
-    { label: "Cars Serviced", value: "2,156", icon: Car, change: "+15%" },
-    { label: "Monthly Revenue", value: "₹4,04,04,225", icon: DollarSign, change: "+23%" },
-    { label: "Website Visitors", value: "15,432", icon: Globe, change: "+18%" },
-    { label: "Page Views", value: "45,821", icon: Eye, change: "+25%" },
-    { label: "System Uptime", value: "99.9%", icon: Server, change: "+0.1%" },
-    { label: "Active Sessions", value: "234", icon: Activity, change: "+5%" }
-  ];
+  const stats: Array<{
+    label: string;
+    value: string;
+    icon: React.ComponentType<{ className?: string }>;
+    change: string;
+  }> = [];
 
-  const recentBookings = [
-    { id: "SC-001234", customer: "John Smith", service: "AI Diagnostics", date: "Dec 15, 2024", status: "Confirmed" },
-    { id: "SC-001235", customer: "Sarah Johnson", service: "Engine Rebuild", date: "Dec 16, 2024", status: "In Progress" },
-    { id: "SC-001236", customer: "Michael Chen", service: "Smart Customization", date: "Dec 17, 2024", status: "Pending" },
-    { id: "SC-001237", customer: "Emma Davis", service: "Predictive Maintenance", date: "Dec 18, 2024", status: "Confirmed" }
-  ];
+  const recentBookings: Array<{
+    id: string;
+    customer: string;
+    service: string;
+    date: string;
+    status: string;
+  }> = [];
 
   return (
     <div className="space-y-6">
@@ -56,23 +53,31 @@ const AdminDashboardHome = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => {
-          const IconComponent = stat.icon;
-          return (
-            <Card key={index} className="p-6 shadow-elegant hover:shadow-luxury transition-luxury group cursor-pointer">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
-                  <p className="text-2xl font-bold text-primary">{stat.value}</p>
-                  <p className="text-sm text-secondary font-medium">{stat.change} from last month</p>
+        {stats.length > 0 ? (
+          stats.map((stat, index) => {
+            const IconComponent = stat.icon;
+            return (
+              <Card key={index} className="p-6 shadow-elegant hover:shadow-luxury transition-luxury group cursor-pointer">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-primary">{stat.value}</p>
+                    <p className="text-sm text-secondary font-medium">{stat.change} from last month</p>
+                  </div>
+                  <div className="w-12 h-12 bg-gradient-luxury rounded-full flex items-center justify-center group-hover:scale-110 transition-luxury">
+                    <IconComponent className="w-6 h-6 text-primary" />
+                  </div>
                 </div>
-                <div className="w-12 h-12 bg-gradient-luxury rounded-full flex items-center justify-center group-hover:scale-110 transition-luxury">
-                  <IconComponent className="w-6 h-6 text-primary" />
-                </div>
-              </div>
-            </Card>
-          );
-        })}
+              </Card>
+            );
+          })
+        ) : (
+          <Card className="col-span-full p-8 text-center">
+            <TrendingUp className="w-12 h-12 text-accent mx-auto mb-4" />
+            <p className="text-lg text-muted-foreground mb-2">No statistics available</p>
+            <p className="text-sm text-muted-foreground">Data will appear once the system is connected</p>
+          </Card>
+        )}
       </div>
 
       {/* Main Content Grid */}
@@ -84,24 +89,32 @@ const AdminDashboardHome = () => {
             <Button variant="ghost" size="sm">View All</Button>
           </div>
           <div className="space-y-4">
-            {recentBookings.map((booking) => (
-              <div key={booking.id} className="flex items-center justify-between p-4 bg-card-luxury rounded-luxury hover:shadow-elegant transition-luxury">
-                <div>
-                  <p className="font-medium text-primary">{booking.customer}</p>
-                  <p className="text-sm text-muted-foreground">{booking.service}</p>
-                  <p className="text-xs text-muted-foreground">{booking.id}</p>
+            {recentBookings.length > 0 ? (
+              recentBookings.map((booking) => (
+                <div key={booking.id} className="flex items-center justify-between p-4 bg-card-luxury rounded-luxury hover:shadow-elegant transition-luxury">
+                  <div>
+                    <p className="font-medium text-primary">{booking.customer}</p>
+                    <p className="text-sm text-muted-foreground">{booking.service}</p>
+                    <p className="text-xs text-muted-foreground">{booking.id}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-primary">{booking.date}</p>
+                    <Badge 
+                      variant={booking.status === 'Confirmed' ? 'default' : booking.status === 'In Progress' ? 'secondary' : 'outline'}
+                      className="mt-1"
+                    >
+                      {booking.status}
+                    </Badge>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-primary">{booking.date}</p>
-                  <Badge 
-                    variant={booking.status === 'Confirmed' ? 'default' : booking.status === 'In Progress' ? 'secondary' : 'outline'}
-                    className="mt-1"
-                  >
-                    {booking.status}
-                  </Badge>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <Calendar className="w-12 h-12 text-accent mx-auto mb-4" />
+                <p className="text-lg text-muted-foreground mb-2">No recent bookings</p>
+                <p className="text-sm text-muted-foreground">New bookings will appear here</p>
               </div>
-            ))}
+            )}
           </div>
         </Card>
 
