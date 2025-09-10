@@ -6,7 +6,7 @@ import TestimonialSlider from "@/components/TestimonialSlider";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Zap, Award, Users, Leaf, ArrowRight, CheckCircle } from "lucide-react";
-import { useWebsiteContent } from "@/lib/contentStore";
+import { useWebsiteContent } from "@/lib/content-hooks";
 import heroImage from "@/assets/hero-luxury-car.jpg";
 
 const Index = () => {
