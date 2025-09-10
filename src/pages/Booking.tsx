@@ -25,18 +25,14 @@ const Booking = () => {
   const [selectedService, setSelectedService] = useState("");
   const [vehicleImages, setVehicleImages] = useState<FileList | null>(null);
 
-  const services = [
-    { id: "ai-diagnostics", name: "AI Diagnostics", price: 24999, duration: "2 hours" },
-    { id: "engine-rebuild", name: "Engine Rebuild", price: 749999, duration: "3-5 days" },
-    { id: "smart-customization", name: "Smart Customization", price: 209999, duration: "1-2 days" },
-    { id: "emergency", name: "Emergency Assistance", price: 16599, duration: "Immediate" },
-    { id: "maintenance", name: "Predictive Maintenance", price: 12499, duration: "3 hours" }
-  ];
+  const services: Array<{
+    id: string;
+    name: string;
+    price: number;
+    duration: string;
+  }> = [];
 
-  const timeSlots = [
-    "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
-    "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"
-  ];
+  const timeSlots: string[] = [];
 
   const [bookingData, setBookingData] = useState({
     service: "",
@@ -81,35 +77,43 @@ const Booking = () => {
             </div>
             
             <div className="grid gap-4">
-              {services.map((service) => (
-                <Card 
-                  key={service.id}
-                  className={cn(
-                    "p-4 cursor-pointer transition-luxury hover:shadow-elegant",
-                    selectedService === service.id ? "ring-2 ring-secondary bg-card-luxury" : "bg-card"
-                  )}
-                  onClick={() => setSelectedService(service.id)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-luxury text-lg font-semibold text-primary">{service.name}</h3>
-                      <div className="flex items-center gap-4 mt-2">
-                        <Badge variant="secondary" className="text-xs">
-                          <Clock className="w-3 h-3 mr-1" />
-                          {service.duration}
-                        </Badge>
-                        <span className="text-lg font-bold text-secondary">₹{service.price.toLocaleString()}</span>
+              {services.length > 0 ? (
+                services.map((service) => (
+                  <Card 
+                    key={service.id}
+                    className={cn(
+                      "p-4 cursor-pointer transition-luxury hover:shadow-elegant",
+                      selectedService === service.id ? "ring-2 ring-secondary bg-card-luxury" : "bg-card"
+                    )}
+                    onClick={() => setSelectedService(service.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-luxury text-lg font-semibold text-primary">{service.name}</h3>
+                        <div className="flex items-center gap-4 mt-2">
+                          <Badge variant="secondary" className="text-xs">
+                            <Clock className="w-3 h-3 mr-1" />
+                            {service.duration}
+                          </Badge>
+                          <span className="text-lg font-bold text-secondary">₹{service.price.toLocaleString()}</span>
+                        </div>
+                      </div>
+                      <div className={cn(
+                        "w-5 h-5 rounded-full border-2 flex items-center justify-center",
+                        selectedService === service.id ? "border-secondary bg-secondary" : "border-accent"
+                      )}>
+                        {selectedService === service.id && <Check className="w-3 h-3 text-white" />}
                       </div>
                     </div>
-                    <div className={cn(
-                      "w-5 h-5 rounded-full border-2 flex items-center justify-center",
-                      selectedService === service.id ? "border-secondary bg-secondary" : "border-accent"
-                    )}>
-                      {selectedService === service.id && <Check className="w-3 h-3 text-white" />}
-                    </div>
-                  </div>
+                  </Card>
+                ))
+              ) : (
+                <Card className="p-8 text-center">
+                  <Car className="w-12 h-12 text-accent mx-auto mb-4" />
+                  <p className="text-lg text-muted-foreground mb-2">No services available</p>
+                  <p className="text-sm text-muted-foreground">Services will be loaded shortly. Please check back in a moment.</p>
                 </Card>
-              ))}
+              )}
             </div>
           </div>
         );
@@ -139,16 +143,24 @@ const Booking = () => {
               <div>
                 <Label className="text-primary font-medium mb-3 block">Select Time</Label>
                 <div className="grid grid-cols-2 gap-2">
-                  {timeSlots.map((time) => (
-                    <Button
-                      key={time}
-                      variant={selectedTime === time ? "luxury" : "elegant"}
-                      className="justify-center"
-                      onClick={() => setSelectedTime(time)}
-                    >
-                      {time}
-                    </Button>
-                  ))}
+                  {timeSlots.length > 0 ? (
+                    timeSlots.map((time) => (
+                      <Button
+                        key={time}
+                        variant={selectedTime === time ? "luxury" : "elegant"}
+                        className="justify-center"
+                        onClick={() => setSelectedTime(time)}
+                      >
+                        {time}
+                      </Button>
+                    ))
+                  ) : (
+                    <div className="col-span-2 text-center py-8">
+                      <Clock className="w-8 h-8 text-accent mx-auto mb-3" />
+                      <p className="text-muted-foreground mb-2">No time slots available</p>
+                      <p className="text-xs text-muted-foreground">Please select a date to see available times</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

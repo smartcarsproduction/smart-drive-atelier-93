@@ -7,25 +7,19 @@ import { Link } from "react-router-dom";
 import { CheckCircle, Calendar, Car, Clock, MapPin, Phone, ArrowRight } from "lucide-react";
 
 const BookingConfirmation = () => {
-  // Mock booking data - in real app, this would come from booking state/context
-  const bookingDetails = {
-    confirmationNumber: "SC-2024-001234",
-    service: "AI Diagnostics",
-    date: "December 15, 2024",
-    time: "10:00 AM - 12:00 PM",
-    vehicle: "2023 Mercedes-Benz S-Class",
-    location: "Smart Cars Beverly Hills",
-    address: "9876 Rodeo Drive, Beverly Hills, CA 90210",
-    price: "$299",
-    concierge: "Victoria Sterling"
-  };
+  const bookingDetails: {
+    confirmationNumber: string;
+    service: string;
+    date: string;
+    time: string;
+    vehicle: string;
+    location: string;
+    address: string;
+    price: string;
+    concierge: string;
+  } | null = null;
 
-  const nextSteps = [
-    "You will receive a detailed service preparation guide via email within 15 minutes",
-    "Our concierge team will contact you 24 hours before your appointment",
-    "White-glove pickup service is included - no need to drive to our facility",
-    "Real-time service updates will be sent to your mobile device"
-  ];
+  const nextSteps: string[] = [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -49,83 +43,106 @@ const BookingConfirmation = () => {
 
           {/* Booking Details */}
           <Card className="p-8 shadow-luxury mb-8">
-            <div className="flex items-center justify-between mb-6 pb-6 border-b border-accent-light">
-              <h2 className="font-luxury text-2xl font-bold text-primary">Booking Details</h2>
-              <Badge variant="default" className="bg-green-100 text-green-800 border-green-200">
-                Confirmed
-              </Badge>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Confirmation Number</p>
-                  <p className="font-mono text-lg font-semibold text-primary">{bookingDetails.confirmationNumber}</p>
+            {bookingDetails ? (
+              <>
+                <div className="flex items-center justify-between mb-6 pb-6 border-b border-accent-light">
+                  <h2 className="font-luxury text-2xl font-bold text-primary">Booking Details</h2>
+                  <Badge variant="default" className="bg-green-100 text-green-800 border-green-200">
+                    Confirmed
+                  </Badge>
                 </div>
                 
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Service</p>
-                  <p className="text-lg font-medium text-primary">{bookingDetails.service}</p>
-                </div>
-                
-                <div className="flex items-center space-x-3">
-                  <Calendar className="w-5 h-5 text-secondary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Date & Time</p>
-                    <p className="font-medium text-primary">{bookingDetails.date}</p>
-                    <p className="text-sm text-secondary">{bookingDetails.time}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Confirmation Number</p>
+                      <p className="font-mono text-lg font-semibold text-primary">{bookingDetails.confirmationNumber}</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Service</p>
+                      <p className="text-lg font-medium text-primary">{bookingDetails.service}</p>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <Calendar className="w-5 h-5 text-secondary" />
+                      <div>
+                        <p className="text-sm text-muted-foreground">Date & Time</p>
+                        <p className="font-medium text-primary">{bookingDetails.date}</p>
+                        <p className="text-sm text-secondary">{bookingDetails.time}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <Car className="w-5 h-5 text-secondary" />
+                      <div>
+                        <p className="text-sm text-muted-foreground">Vehicle</p>
+                        <p className="font-medium text-primary">{bookingDetails.vehicle}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <MapPin className="w-5 h-5 text-secondary" />
+                      <div>
+                        <p className="text-sm text-muted-foreground">Service Location</p>
+                        <p className="font-medium text-primary">{bookingDetails.location}</p>
+                        <p className="text-sm text-muted-foreground">{bookingDetails.address}</p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Assigned Concierge</p>
+                      <p className="font-medium text-primary">{bookingDetails.concierge}</p>
+                    </div>
+                    
+                    <div className="bg-card-luxury p-4 rounded-luxury">
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Service Total</span>
+                        <span className="text-2xl font-bold text-secondary">{bookingDetails.price}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Payment will be processed after service completion
+                      </p>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="flex items-center space-x-3">
-                  <Car className="w-5 h-5 text-secondary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Vehicle</p>
-                    <p className="font-medium text-primary">{bookingDetails.vehicle}</p>
-                  </div>
-                </div>
+              </>
+            ) : (
+              <div className="text-center py-12">
+                <CheckCircle className="w-16 h-16 text-accent mx-auto mb-4" />
+                <p className="text-lg text-muted-foreground mb-2">No booking details available</p>
+                <p className="text-sm text-muted-foreground mb-6">Booking confirmation details will appear here</p>
+                <Link to="/booking">
+                  <Button variant="luxury">
+                    Make a Booking
+                  </Button>
+                </Link>
               </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <MapPin className="w-5 h-5 text-secondary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Service Location</p>
-                    <p className="font-medium text-primary">{bookingDetails.location}</p>
-                    <p className="text-sm text-muted-foreground">{bookingDetails.address}</p>
-                  </div>
-                </div>
-                
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Assigned Concierge</p>
-                  <p className="font-medium text-primary">{bookingDetails.concierge}</p>
-                </div>
-                
-                <div className="bg-card-luxury p-4 rounded-luxury">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Service Total</span>
-                    <span className="text-2xl font-bold text-secondary">{bookingDetails.price}</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Payment will be processed after service completion
-                  </p>
-                </div>
-              </div>
-            </div>
+            )}
           </Card>
 
           {/* What Happens Next */}
           <Card className="p-8 shadow-luxury mb-8 bg-card-luxury">
             <h2 className="font-luxury text-2xl font-bold text-primary mb-6">What Happens Next</h2>
             <div className="space-y-4">
-              {nextSteps.map((step, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-gradient-luxury rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <span className="text-primary text-sm font-bold">{index + 1}</span>
+              {nextSteps.length > 0 ? (
+                nextSteps.map((step, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-gradient-luxury rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                      <span className="text-primary text-sm font-bold">{index + 1}</span>
+                    </div>
+                    <p className="text-muted-foreground">{step}</p>
                   </div>
-                  <p className="text-muted-foreground">{step}</p>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <Clock className="w-12 h-12 text-accent mx-auto mb-4" />
+                  <p className="text-lg text-muted-foreground mb-2">Next steps will appear here</p>
+                  <p className="text-sm text-muted-foreground">Information about what happens next will be provided</p>
                 </div>
-              ))}
+              )}
             </div>
           </Card>
 

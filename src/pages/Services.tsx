@@ -12,13 +12,7 @@ const Services = () => {
 
   const serviceIcons = [Brain, Wrench, Palette, Phone, Shield, Clock];
 
-  const addons = [
-    "Interior Detailing - ₹24,999",
-    "Paint Protection Film - ₹1,08,999",
-    "Ceramic Coating - ₹74,999",
-    "Performance Tuning - ₹1,33,999",
-    "Custom Exhaust - ₹1,91,999"
-  ];
+  const addons: string[] = [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -159,14 +153,22 @@ const Services = () => {
           </div>
           
           <Card className="p-8 shadow-luxury bg-card-luxury max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 sm:gap-6">
-            {addons.map((addon, index) => (
-              <div key={index} className="flex flex-col sm:flex-row xl:flex-col items-center justify-between p-3 sm:p-4 bg-background rounded-luxury">
-                <span className="text-muted-foreground text-sm sm:text-base text-center sm:text-left xl:text-center mb-2 sm:mb-0 xl:mb-2">{addon.split(' - ')[0]}</span>
-                <span className="font-semibold text-secondary text-sm sm:text-base">{addon.split(' - ')[1]}</span>
+            {addons.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 sm:gap-6">
+                {addons.map((addon, index) => (
+                  <div key={index} className="flex flex-col sm:flex-row xl:flex-col items-center justify-between p-3 sm:p-4 bg-background rounded-luxury">
+                    <span className="text-muted-foreground text-sm sm:text-base text-center sm:text-left xl:text-center mb-2 sm:mb-0 xl:mb-2">{addon.split(' - ')[0]}</span>
+                    <span className="font-semibold text-secondary text-sm sm:text-base">{addon.split(' - ')[1]}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-            </div>
+            ) : (
+              <div className="text-center py-8">
+                <Palette className="w-12 h-12 text-accent mx-auto mb-4" />
+                <p className="text-lg text-muted-foreground mb-2">No add-on services available</p>
+                <p className="text-sm text-muted-foreground">Premium add-on services will be displayed here</p>
+              </div>
+            )}
           </Card>
         </div>
       </section>

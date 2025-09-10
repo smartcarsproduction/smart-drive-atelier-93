@@ -18,57 +18,20 @@ const Contact = () => {
     toast.success("Message sent! Our concierge team will contact you within 2 hours.");
   };
 
-  const contactMethods = [
-    {
-      icon: Phone,
-      title: "24/7 Emergency Helpline",
-      details: content.contact.phone,
-      description: "Immediate assistance for urgent automotive needs across India",
-      action: "Call Now"
-    },
-    {
-      icon: Mail,
-      title: "Premium Concierge",
-      details: content.contact.email,
-      description: "Personalized service coordination and inquiries",
-      action: "Email Us"
-    },
-    {
-      icon: MapPin,
-      title: "Mumbai Service Center",
-      details: content.contact.address,
-      description: "Visit our flagship luxury service center",
-      action: "Get Directions"
-    },
-    {
-      icon: Clock,
-      title: "Service Hours (IST)",
-      details: content.contact.hours,
-      description: "Extended hours for premium members",
-      action: "Schedule Visit"
-    }
-  ];
+  const contactMethods: Array<{
+    icon: React.ComponentType<{ className?: string }>;
+    title: string;
+    details: string;
+    description: string;
+    action: string;
+  }> = [];
 
-  const quickActions = [
-    {
-      icon: MessageCircle,
-      title: "Exclusive Consultation",
-      description: "One-on-one consultation for luxury vehicle customization",
-      buttonText: "Book Consultation"
-    },
-    {
-      icon: Shield,
-      title: "Emergency Help",
-      description: "Immediate roadside assistance and emergency services",
-      buttonText: "Request Help"
-    },
-    {
-      icon: Zap,
-      title: "VIP Quote Request",
-      description: "Priority pricing for comprehensive service packages",
-      buttonText: "Get VIP Quote"
-    }
-  ];
+  const quickActions: Array<{
+    icon: React.ComponentType<{ className?: string }>;
+    title: string;
+    description: string;
+    buttonText: string;
+  }> = [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -98,26 +61,34 @@ const Contact = () => {
             </h2>
             
             <div className="space-y-6">
-              {contactMethods.map((method, index) => {
-                const IconComponent = method.icon;
-                return (
-                  <Card key={index} className="p-6 shadow-elegant hover:shadow-luxury transition-luxury group">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-gradient-luxury rounded-xl flex items-center justify-center group-hover:scale-110 transition-luxury">
-                        <IconComponent className="w-6 h-6 text-primary" />
+              {contactMethods.length > 0 ? (
+                contactMethods.map((method, index) => {
+                  const IconComponent = method.icon;
+                  return (
+                    <Card key={index} className="p-6 shadow-elegant hover:shadow-luxury transition-luxury group">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-12 h-12 bg-gradient-luxury rounded-xl flex items-center justify-center group-hover:scale-110 transition-luxury">
+                          <IconComponent className="w-6 h-6 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-luxury text-lg font-semibold text-primary mb-1">
+                            {method.title}
+                          </h3>
+                          <p className="text-secondary font-medium mb-2">{method.details}</p>
+                          <p className="text-sm text-muted-foreground mb-3">{method.description}</p>
+                          <Button variant="elegant" size="sm">{method.action}</Button>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-luxury text-lg font-semibold text-primary mb-1">
-                          {method.title}
-                        </h3>
-                        <p className="text-secondary font-medium mb-2">{method.details}</p>
-                        <p className="text-sm text-muted-foreground mb-3">{method.description}</p>
-                        <Button variant="elegant" size="sm">{method.action}</Button>
-                      </div>
-                    </div>
-                  </Card>
-                );
-              })}
+                    </Card>
+                  );
+                })
+              ) : (
+                <Card className="p-8 text-center">
+                  <Phone className="w-12 h-12 text-accent mx-auto mb-4" />
+                  <p className="text-lg text-muted-foreground mb-2">Contact information loading</p>
+                  <p className="text-sm text-muted-foreground">Contact details will be available shortly</p>
+                </Card>
+              )}
             </div>
 
             {/* Quick Actions */}
@@ -126,25 +97,33 @@ const Contact = () => {
                 Quick Actions
               </h3>
               <div className="space-y-4">
-                {quickActions.map((action, index) => {
-                  const IconComponent = action.icon;
-                  return (
-                    <Card key={index} className="p-4 shadow-elegant bg-card-luxury">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-gradient-luxury rounded-lg flex items-center justify-center">
-                            <IconComponent className="w-4 h-4 text-primary" />
+                {quickActions.length > 0 ? (
+                  quickActions.map((action, index) => {
+                    const IconComponent = action.icon;
+                    return (
+                      <Card key={index} className="p-4 shadow-elegant bg-card-luxury">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-gradient-luxury rounded-lg flex items-center justify-center">
+                              <IconComponent className="w-4 h-4 text-primary" />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-primary">{action.title}</h4>
+                              <p className="text-xs text-muted-foreground">{action.description}</p>
+                            </div>
                           </div>
-                          <div>
-                            <h4 className="font-medium text-primary">{action.title}</h4>
-                            <p className="text-xs text-muted-foreground">{action.description}</p>
-                          </div>
+                          <Button variant="luxury" size="sm">{action.buttonText}</Button>
                         </div>
-                        <Button variant="luxury" size="sm">{action.buttonText}</Button>
-                      </div>
-                    </Card>
-                  );
-                })}
+                      </Card>
+                    );
+                  })
+                ) : (
+                  <Card className="p-8 text-center">
+                    <MessageCircle className="w-12 h-12 text-accent mx-auto mb-4" />
+                    <p className="text-lg text-muted-foreground mb-2">Quick actions unavailable</p>
+                    <p className="text-sm text-muted-foreground">Quick action shortcuts will appear here</p>
+                  </Card>
+                )}
               </div>
             </div>
           </div>

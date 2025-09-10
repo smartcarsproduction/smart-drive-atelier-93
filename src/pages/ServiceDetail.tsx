@@ -10,188 +10,24 @@ import { Brain, Wrench, Palette, Phone, Shield, Clock, Check, ArrowLeft, Star } 
 const ServiceDetail = () => {
   const { serviceId } = useParams();
   
-  const services = {
-    "ai-diagnostics": {
-      icon: Brain,
-      title: "AI Diagnostics",
-      subtitle: "Advanced Artificial Intelligence Vehicle Analysis",
-      description: "Our revolutionary AI diagnostic system represents the pinnacle of automotive technology, providing unprecedented insight into your vehicle's condition. Using machine learning algorithms trained on millions of data points, we deliver comprehensive analysis that goes far beyond traditional diagnostic methods.",
-      features: [
-        "Real-time system monitoring with 24/7 alerts",
-        "Predictive failure analysis preventing costly repairs",
-        "Performance optimization recommendations",
-        "Digital health reports and maintenance scheduling",
-        "Integration with manufacturer diagnostic protocols",
-        "Historical trend analysis and reporting"
-      ],
-      price: "From $299",
-      duration: "2-4 hours",
-      warranty: "6 months diagnostic warranty",
-      badge: "Popular",
-      images: ["Advanced AI scanners", "Real-time monitoring dashboard", "Comprehensive reporting system"],
-      process: [
-        "Vehicle connectivity and system access",
-        "Comprehensive AI analysis and data collection", 
-        "Pattern recognition and predictive modeling",
-        "Detailed reporting and recommendations"
-      ],
-      testimonial: {
-        text: "The AI diagnostics caught an issue that would have cost me $8,000 in engine damage. Worth every penny.",
-        author: "Michael Chen",
-        title: "Tesla Model S Owner"
-      }
-    },
-    "engine-rebuild": {
-      icon: Wrench,
-      title: "Engine Rebuild",
-      subtitle: "Master Craftsmen Engine Restoration",
-      description: "Our master craftsmen bring decades of experience to completely rebuild your engine to exceed factory specifications. Using only premium components and precision techniques, we restore your engine's power, efficiency, and reliability while maintaining its original character.",
-      features: [
-        "Complete engine disassembly and inspection",
-        "Premium component replacement and upgrades",
-        "Precision machining and balancing",
-        "Performance enhancement options",
-        "Comprehensive warranty coverage",
-        "Detailed photo documentation of entire process"
-      ],
-      price: "From $8,999",
-      duration: "2-4 weeks",
-      warranty: "3 years / 100,000 miles",
-      badge: "Premium",
-      images: ["Clean room engine bay", "Master craftsmen at work", "Premium component selection"],
-      process: [
-        "Complete engine removal and disassembly",
-        "Precision inspection and component analysis",
-        "Machining, rebuilding, and enhancement",
-        "Testing, installation, and performance validation"
-      ],
-      testimonial: {
-        text: "They rebuilt my Ferrari's engine better than new. The attention to detail is extraordinary.",
-        author: "Victoria Sterling",
-        title: "Ferrari 488 Owner"
-      }
-    },
-    "smart-customization": {
-      icon: Palette,
-      title: "Smart Customization",
-      subtitle: "Personalized Luxury Vehicle Modifications",
-      description: "Transform your vehicle into a unique expression of your personality and preferences. Our smart customization service combines aesthetic excellence with advanced technology integration, creating bespoke modifications that enhance both form and function.",
-      features: [
-        "Custom interior design and materials",
-        "Performance modification packages",
-        "Advanced technology integration",
-        "Exclusive luxury materials and finishes",
-        "Personalized lighting and ambiance",
-        "Custom paint and exterior modifications"
-      ],
-      price: "From $2,499",
-      duration: "1-3 weeks",
-      warranty: "2 years comprehensive warranty",
-      badge: "Exclusive",
-      images: ["Custom interior designs", "Premium material selection", "Technology integration"],
-      process: [
-        "Personal consultation and design planning",
-        "Material selection and component sourcing",
-        "Precision installation and integration",
-        "Quality testing and final detailing"
-      ],
-      testimonial: {
-        text: "The custom interior they created is absolutely stunning. It's like driving in a luxury lounge.",
-        author: "James Morrison",
-        title: "Range Rover Owner"
-      }
-    },
-    "emergency-assistance": {
-      icon: Phone,
-      title: "Emergency Assistance",
-      subtitle: "24/7 Elite Roadside Support",
-      description: "Our elite emergency assistance service provides round-the-clock support for luxury vehicle owners worldwide. With priority response times and luxury transportation options, we ensure you're never stranded without premium care.",
-      features: [
-        "24/7 global emergency response",
-        "Priority dispatch and rapid response",
-        "Luxury replacement vehicle provision",
-        "Specialist technician deployment",
-        "Concierge-level customer service",
-        "Real-time tracking and communication"
-      ],
-      price: "$199/month",
-      duration: "Immediate response",
-      warranty: "Service guarantee",
-      badge: "24/7",
-      images: ["Emergency response vehicles", "Global coverage map", "Luxury transportation fleet"],
-      process: [
-        "Emergency call received and assessed",
-        "Specialist technician dispatched",
-        "On-site diagnosis and immediate assistance",
-        "Follow-up service and resolution"
-      ],
-      testimonial: {
-        text: "When my Bentley broke down in the middle of nowhere, they had me in a luxury loaner within an hour.",
-        author: "Eleanor Hayes",
-        title: "Bentley Continental Owner"
-      }
-    },
-    "predictive-maintenance": {
-      icon: Shield,
-      title: "Predictive Maintenance",
-      subtitle: "AI-Powered Preventive Care",
-      description: "Our predictive maintenance service uses advanced AI algorithms to anticipate and prevent issues before they occur. By analyzing your vehicle's data patterns and usage, we maximize reliability while minimizing unexpected repairs and downtime.",
-      features: [
-        "Intelligent maintenance scheduling",
-        "Automated parts pre-ordering",
-        "Service reminders and notifications",
-        "Warranty protection optimization",
-        "Cost savings through prevention",
-        "Detailed maintenance history tracking"
-      ],
-      price: "From $149/month",
-      duration: "Ongoing monitoring",
-      warranty: "Predictive accuracy guarantee",
-      badge: "Smart",
-      images: ["AI monitoring dashboard", "Maintenance scheduling system", "Parts inventory management"],
-      process: [
-        "Vehicle data collection and analysis",
-        "Pattern recognition and prediction modeling",
-        "Automated scheduling and parts ordering",
-        "Proactive maintenance execution"
-      ],
-      testimonial: {
-        text: "Haven't had a single unexpected breakdown since starting their predictive maintenance program.",
-        author: "Dr. Patricia Williams",
-        title: "Mercedes S-Class Owner"
-      }
-    },
-    "concierge-service": {
-      icon: Clock,
-      title: "Concierge Service",
-      subtitle: "White-Glove Automotive Care",
-      description: "Experience the ultimate in luxury automotive service with our concierge program. From vehicle pickup and delivery to complete service coordination, we handle every detail so you can focus on what matters most to you.",
-      features: [
-        "Vehicle pickup and delivery service",
-        "Complete service coordination",
-        "Real-time progress updates",
-        "Detailed service documentation",
-        "Premium vehicle care during service",
-        "Personalized customer service experience"
-      ],
-      price: "Included with premium services",
-      duration: "Full service coordination",
-      warranty: "Service satisfaction guarantee",
-      badge: "Elite",
-      images: ["White-glove vehicle transport", "Service coordination center", "Customer communication system"],
-      process: [
-        "Service consultation and planning",
-        "Professional vehicle pickup",
-        "Service execution with updates",
-        "Quality inspection and delivery"
-      ],
-      testimonial: {
-        text: "The concierge service is incredible. They picked up my car, serviced it perfectly, and returned it detailed.",
-        author: "Alexander Thompson",
-        title: "Porsche 911 Owner"
-      }
-    }
-  };
+  const services: Record<string, {
+    icon: React.ComponentType<{ className?: string }>;
+    title: string;
+    subtitle: string;
+    description: string;
+    features: string[];
+    price: string;
+    duration: string;
+    warranty: string;
+    badge: string;
+    images: string[];
+    process: string[];
+    testimonial: {
+      text: string;
+      author: string;
+      title: string;
+    };
+  }> = {};
 
   const service = services[serviceId as keyof typeof services];
 
