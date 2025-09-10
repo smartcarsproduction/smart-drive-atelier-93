@@ -31,7 +31,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/service-history', serviceHistoryRoutes);
 
 // 404 handler
-app.use('*', (req, res) => {
+app.all('*', (req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
 
