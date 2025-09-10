@@ -1,15 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { UserService } from '@/lib/db-services';
+import type { User as DBUser } from '@/lib/schema';
 
 interface User {
   id: string;
   email: string;
   name: string;
   picture?: string;
+  role?: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (credential: string) => void;
+  login: (credential: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -41,23 +44,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(false);
   }, []);
 
-  const login = (credential: string) => {
+  const login = async (credential: string) => {
     try {
       // Decode JWT token to get user info
       const payloadBase64 = credential.split('.')[1];
       const payload = JSON.parse(atob(payloadBase64));
       
-      const newUser: User = {
-        id: payload.sub,
+      // Get or create user in database
+      const dbUser = await UserService.getOrCreateFromGoogle({
         email: payload.email,
         name: payload.name,
-        picture: payload.picture
+        picture: payload.picture,
+      });
+
+      const newUser: User = {
+        id: dbUser.id,
+        email: dbUser.email,
+        name: dbUser.name,
+        picture: dbUser.picture || undefined,
+        role: dbUser.role,
       };
 
       setUser(newUser);
       localStorage.setItem('user', JSON.stringify(newUser));
     } catch (error) {
-      console.error('Error decoding Google credential:', error);
+      console.error('Error logging in with Google:', error);
     }
   };
 

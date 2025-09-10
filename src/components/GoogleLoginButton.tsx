@@ -43,9 +43,9 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
       }
     };
 
-    const handleCredentialResponse = (response: any) => {
+    const handleCredentialResponse = async (response: any) => {
       try {
-        login(response.credential);
+        await login(response.credential);
         toast.success('Successfully signed in with Google!');
         navigate(redirectPath);
       } catch (error) {
