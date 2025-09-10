@@ -35,15 +35,61 @@ class ApiError extends Error {
   }
 }
 
+// Token management utilities
+class TokenManager {
+  private static readonly ACCESS_TOKEN_KEY = 'access_token';
+  private static readonly REFRESH_TOKEN_KEY = 'refresh_token';
+  private static readonly USER_DATA_KEY = 'user_data';
+
+  static getAccessToken(): string | null {
+    return localStorage.getItem(this.ACCESS_TOKEN_KEY);
+  }
+
+  static getRefreshToken(): string | null {
+    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+  }
+
+  static getUserData(): any | null {
+    const userData = localStorage.getItem(this.USER_DATA_KEY);
+    return userData ? JSON.parse(userData) : null;
+  }
+
+  static setTokens(accessToken: string, refreshToken: string, userData: any): void {
+    localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
+    localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
+    localStorage.setItem(this.USER_DATA_KEY, JSON.stringify(userData));
+  }
+
+  static clearTokens(): void {
+    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    localStorage.removeItem(this.USER_DATA_KEY);
+  }
+
+  static isTokenExpired(token: string): boolean {
+    if (!token) return true;
+    
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 < Date.now();
+    } catch {
+      return true;
+    }
+  }
+}
+
 async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
   
+  // Get access token and add to headers if available
+  const accessToken = TokenManager.getAccessToken();
   const config: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
       ...options.headers,
     },
     ...options,
@@ -51,6 +97,45 @@ async function apiRequest<T>(
 
   try {
     const response = await fetch(url, config);
+    
+    // Handle 401 Unauthorized - attempt token refresh
+    if (response.status === 401 && accessToken && !endpoint.includes('/refresh-token')) {
+      const refreshToken = TokenManager.getRefreshToken();
+      
+      if (refreshToken && !TokenManager.isTokenExpired(refreshToken)) {
+        try {
+          // Attempt to refresh the token
+          const refreshResponse = await fetch(`${API_BASE_URL}/api/users/refresh-token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken }),
+          });
+
+          if (refreshResponse.ok) {
+            const authData = await refreshResponse.json();
+            TokenManager.setTokens(authData.accessToken, authData.refreshToken, authData.user);
+            
+            // Retry the original request with new token
+            config.headers = {
+              ...config.headers,
+              Authorization: `Bearer ${authData.accessToken}`,
+            };
+            
+            const retryResponse = await fetch(url, config);
+            if (retryResponse.ok) {
+              return retryResponse.status === 204 ? (null as T) : await retryResponse.json();
+            }
+          }
+        } catch (refreshError) {
+          console.error('Token refresh failed:', refreshError);
+        }
+      }
+      
+      // If refresh failed or no refresh token, clear tokens and trigger logout
+      TokenManager.clearTokens();
+      window.dispatchEvent(new CustomEvent('auth:logout'));
+      throw new ApiError('Session expired. Please log in again.', 401);
+    }
     
     if (!response.ok) {
       let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
@@ -85,8 +170,63 @@ async function apiRequest<T>(
   }
 }
 
-// User API functions
+// User API functions  
 export const userApi = {
+  // Authentication endpoints
+  register: (userData: { email: string; name: string; phone?: string; password: string }) => 
+    apiRequest<{
+      user: any;
+      accessToken: string;
+      refreshToken: string;
+      expiresIn: string;
+    }>('/api/users/register', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    }),
+  
+  login: (credentials: { email: string; password: string }) =>
+    apiRequest<{
+      user: any;
+      accessToken: string;
+      refreshToken: string;
+      expiresIn: string;
+    }>('/api/users/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    }),
+
+  googleLogin: (googleData: { email: string; name: string; picture?: string }) => 
+    apiRequest<{
+      user: any;
+      accessToken: string;
+      refreshToken: string;
+      expiresIn: string;
+    }>('/api/users/google-auth', {
+      method: 'POST',
+      body: JSON.stringify(googleData),
+    }),
+
+  refreshToken: (refreshToken: string) =>
+    apiRequest<{
+      user: any;
+      accessToken: string;
+      refreshToken: string;
+      expiresIn: string;
+    }>('/api/users/refresh-token', {
+      method: 'POST',
+      body: JSON.stringify({ refreshToken }),
+    }),
+
+  // Profile endpoints
+  getCurrentUser: () => apiRequest<any>('/api/users/me'),
+  
+  changePassword: (passwords: { oldPassword: string; newPassword: string }) =>
+    apiRequest<{ message: string }>('/api/users/change-password', {
+      method: 'PUT',
+      body: JSON.stringify(passwords),
+    }),
+
+  // Admin endpoints
   getCustomers: () => apiRequest<any[]>('/api/users/customers'),
   getUserById: (id: string) => apiRequest<any>(`/api/users/${id}`),
   getUserByEmail: (email: string) => apiRequest<any>(`/api/users/email/${email}`),
@@ -97,10 +237,6 @@ export const userApi = {
   updateUser: (id: string, updates: any) => apiRequest<any>(`/api/users/${id}`, {
     method: 'PUT',
     body: JSON.stringify(updates),
-  }),
-  googleLogin: (googleData: any) => apiRequest<any>('/api/users/google-auth', {
-    method: 'POST',
-    body: JSON.stringify(googleData),
   }),
 };
 
@@ -190,4 +326,5 @@ export const serviceHistoryApi = {
   }),
 };
 
-export { ApiError };
+// Export TokenManager for use in auth context
+export { ApiError, TokenManager };

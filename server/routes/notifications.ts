@@ -1,6 +1,11 @@
 import { Router } from 'express';
 import { NotificationService } from '../../src/lib/db-services';
 import { z } from 'zod';
+import { 
+  authenticateToken, 
+  requireAdmin,
+  AuthenticatedRequest 
+} from '../middleware/auth';
 
 const router = Router();
 
@@ -13,9 +18,14 @@ const createNotificationSchema = z.object({
   relatedBookingId: z.string().uuid().optional(),
 });
 
-// Get notifications for user
-router.get('/user/:userId', async (req, res) => {
+// Get notifications for user (own notifications or admin)
+router.get('/user/:userId', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
+    // Users can only access their own notifications, admins can access any
+    if (req.user!.role !== 'admin' && req.user!.id !== req.params.userId) {
+      return res.status(403).json({ error: 'Cannot access other user\'s notifications' });
+    }
+
     const notifications = await NotificationService.getForUser(req.params.userId);
     res.json(notifications);
   } catch (error) {
@@ -24,9 +34,25 @@ router.get('/user/:userId', async (req, res) => {
   }
 });
 
-// Get unread count for user
-router.get('/user/:userId/unread-count', async (req, res) => {
+// Get current user's notifications
+router.get('/my-notifications', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
+    const notifications = await NotificationService.getForUser(req.user!.id);
+    res.json(notifications);
+  } catch (error) {
+    console.error('Error fetching user notifications:', error);
+    res.status(500).json({ error: 'Failed to fetch notifications' });
+  }
+});
+
+// Get unread count for user (own count or admin)
+router.get('/user/:userId/unread-count', authenticateToken, async (req: AuthenticatedRequest, res) => {
+  try {
+    // Users can only access their own unread count, admins can access any
+    if (req.user!.role !== 'admin' && req.user!.id !== req.params.userId) {
+      return res.status(403).json({ error: 'Cannot access other user\'s notifications' });
+    }
+
     const count = await NotificationService.getUnreadCount(req.params.userId);
     res.json({ count });
   } catch (error) {
@@ -35,8 +61,19 @@ router.get('/user/:userId/unread-count', async (req, res) => {
   }
 });
 
-// Create notification
-router.post('/', async (req, res) => {
+// Get current user's unread count
+router.get('/my-unread-count', authenticateToken, async (req: AuthenticatedRequest, res) => {
+  try {
+    const count = await NotificationService.getUnreadCount(req.user!.id);
+    res.json({ count });
+  } catch (error) {
+    console.error('Error fetching unread count:', error);
+    res.status(500).json({ error: 'Failed to fetch unread count' });
+  }
+});
+
+// Create notification (admin only)
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const notificationData = createNotificationSchema.parse(req.body);
     const notification = await NotificationService.create(notificationData);
@@ -50,9 +87,10 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Mark notification as read
-router.patch('/:id/read', async (req, res) => {
+// Mark notification as read (authenticated users only)
+router.patch('/:id/read', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
+    // TODO: Add check to ensure user can only mark their own notifications as read
     await NotificationService.markAsRead(req.params.id);
     res.status(204).send();
   } catch (error) {

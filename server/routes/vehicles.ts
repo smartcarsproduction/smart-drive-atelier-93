@@ -1,6 +1,11 @@
 import { Router } from 'express';
 import { VehicleService } from '../../src/lib/db-services';
 import { z } from 'zod';
+import { 
+  authenticateToken, 
+  requireAdmin,
+  AuthenticatedRequest 
+} from '../middleware/auth';
 
 const router = Router();
 
@@ -21,9 +26,14 @@ const createVehicleSchema = z.object({
 
 const updateVehicleSchema = createVehicleSchema.partial().omit({ userId: true });
 
-// Get vehicles by user ID
-router.get('/user/:userId', async (req, res) => {
+// Get vehicles by user ID (authenticated users only - can access own vehicles, admins can access any)
+router.get('/user/:userId', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
+    // Users can only access their own vehicles, admins can access any
+    if (req.user!.role !== 'admin' && req.user!.id !== req.params.userId) {
+      return res.status(403).json({ error: 'Cannot access other user\'s vehicles' });
+    }
+
     const vehicles = await VehicleService.findByUserId(req.params.userId);
     res.json(vehicles);
   } catch (error) {
@@ -32,13 +42,30 @@ router.get('/user/:userId', async (req, res) => {
   }
 });
 
-// Get vehicle by ID
-router.get('/:id', async (req, res) => {
+// Get current user's vehicles
+router.get('/my-vehicles', authenticateToken, async (req: AuthenticatedRequest, res) => {
+  try {
+    const vehicles = await VehicleService.findByUserId(req.user!.id);
+    res.json(vehicles);
+  } catch (error) {
+    console.error('Error fetching user vehicles:', error);
+    res.status(500).json({ error: 'Failed to fetch vehicles' });
+  }
+});
+
+// Get vehicle by ID (owner or admin only)
+router.get('/:id', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const vehicle = await VehicleService.findById(req.params.id);
     if (!vehicle) {
       return res.status(404).json({ error: 'Vehicle not found' });
     }
+
+    // Users can only access their own vehicles, admins can access any
+    if (req.user!.role !== 'admin' && req.user!.id !== vehicle.userId) {
+      return res.status(403).json({ error: 'Cannot access other user\'s vehicle' });
+    }
+
     res.json(vehicle);
   } catch (error) {
     console.error('Error fetching vehicle:', error);
@@ -46,10 +73,21 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create vehicle
-router.post('/', async (req, res) => {
+// Create vehicle (authenticated users can create for themselves, admins can create for anyone)
+router.post('/', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const vehicleData = createVehicleSchema.parse(req.body);
+    
+    // If not admin, force userId to be the authenticated user
+    if (req.user!.role !== 'admin') {
+      vehicleData.userId = req.user!.id;
+    }
+    
+    // Validate userId matches authenticated user or user is admin
+    if (req.user!.role !== 'admin' && vehicleData.userId !== req.user!.id) {
+      return res.status(403).json({ error: 'Cannot create vehicle for other users' });
+    }
+
     const vehicle = await VehicleService.create(vehicleData);
     res.status(201).json(vehicle);
   } catch (error) {
@@ -61,9 +99,20 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update vehicle
-router.put('/:id', async (req, res) => {
+// Update vehicle (owner or admin only)
+router.put('/:id', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
+    // First get the vehicle to check ownership
+    const existingVehicle = await VehicleService.findById(req.params.id);
+    if (!existingVehicle) {
+      return res.status(404).json({ error: 'Vehicle not found' });
+    }
+
+    // Users can only update their own vehicles, admins can update any
+    if (req.user!.role !== 'admin' && req.user!.id !== existingVehicle.userId) {
+      return res.status(403).json({ error: 'Cannot update other user\'s vehicle' });
+    }
+
     const updates = updateVehicleSchema.parse(req.body);
     const vehicle = await VehicleService.update(req.params.id, updates);
     res.json(vehicle);
@@ -76,9 +125,20 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete vehicle (soft delete)
-router.delete('/:id', async (req, res) => {
+// Delete vehicle (owner or admin only)
+router.delete('/:id', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
+    // First get the vehicle to check ownership
+    const existingVehicle = await VehicleService.findById(req.params.id);
+    if (!existingVehicle) {
+      return res.status(404).json({ error: 'Vehicle not found' });
+    }
+
+    // Users can only delete their own vehicles, admins can delete any
+    if (req.user!.role !== 'admin' && req.user!.id !== existingVehicle.userId) {
+      return res.status(403).json({ error: 'Cannot delete other user\'s vehicle' });
+    }
+
     await VehicleService.delete(req.params.id);
     res.status(204).send();
   } catch (error) {

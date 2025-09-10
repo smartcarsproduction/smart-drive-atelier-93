@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { userApi } from '@/lib/api-client';
+import { userApi, TokenManager } from '@/lib/api-client';
 
 interface User {
   id: string;
@@ -37,58 +37,60 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is stored in localStorage
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    // Check if user is stored in token manager
+    const storedUser = TokenManager.getUserData();
+    const accessToken = TokenManager.getAccessToken();
+    
+    if (storedUser && accessToken && !TokenManager.isTokenExpired(accessToken)) {
+      setUser(storedUser);
+    } else {
+      // Clear invalid/expired tokens
+      TokenManager.clearTokens();
     }
+    
+    // Listen for logout events from API client
+    const handleLogout = () => {
+      setUser(null);
+    };
+    
+    window.addEventListener('auth:logout', handleLogout);
     setIsLoading(false);
+    
+    return () => {
+      window.removeEventListener('auth:logout', handleLogout);
+    };
   }, []);
 
   const login = async (credential: string) => {
     try {
-      // Decode JWT token to get user info
+      // Decode JWT token to get user info for Google OAuth
       const payloadBase64 = credential.split('.')[1];
       const payload = JSON.parse(atob(payloadBase64));
       
-      // Get or create user in database
-      const dbUser = await userApi.googleLogin({
+      // Get or create user in database and get JWT tokens
+      const authResponse = await userApi.googleLogin({
         email: payload.email,
         name: payload.name,
         picture: payload.picture,
       });
 
-      const newUser: User = {
-        id: dbUser.id,
-        email: dbUser.email,
-        name: dbUser.name,
-        picture: dbUser.picture || undefined,
-        role: dbUser.role,
-      };
-
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
+      // Store JWT tokens and user data
+      TokenManager.setTokens(authResponse.accessToken, authResponse.refreshToken, authResponse.user);
+      setUser(authResponse.user);
     } catch (error) {
       console.error('Error logging in with Google:', error);
+      throw error;
     }
   };
 
   const loginWithEmail = async (email: string, password: string) => {
     try {
-      // For now, we'll just check if user exists by email
-      // In a real app, you'd verify password hash
-      const dbUser = await userApi.getUserByEmail(email);
+      // Use secure login endpoint with password verification
+      const authResponse = await userApi.login({ email, password });
       
-      const newUser: User = {
-        id: dbUser.id,
-        email: dbUser.email,
-        name: dbUser.name,
-        picture: dbUser.picture || undefined,
-        role: dbUser.role,
-      };
-
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
+      // Store JWT tokens and user data
+      TokenManager.setTokens(authResponse.accessToken, authResponse.refreshToken, authResponse.user);
+      setUser(authResponse.user);
     } catch (error) {
       console.error('Error logging in with email:', error);
       throw new Error('Invalid email or password');
@@ -97,29 +99,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signUp = async (userData: { email: string; name: string; phone?: string; password: string }) => {
     try {
-      const { password, ...userDataWithoutPassword } = userData;
-      // Create user without storing password (in real app, hash password)
-      const dbUser = await userApi.createUser(userDataWithoutPassword);
+      // Use secure registration endpoint with password hashing
+      const authResponse = await userApi.register(userData);
       
-      const newUser: User = {
-        id: dbUser.id,
-        email: dbUser.email,
-        name: dbUser.name,
-        picture: dbUser.picture || undefined,
-        role: dbUser.role,
-      };
-
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
+      // Store JWT tokens and user data
+      TokenManager.setTokens(authResponse.accessToken, authResponse.refreshToken, authResponse.user);
+      setUser(authResponse.user);
     } catch (error) {
       console.error('Error signing up:', error);
+      if (error instanceof Error && error.message.includes('already exists')) {
+        throw new Error('An account with this email already exists');
+      }
       throw new Error('Failed to create account');
     }
   };
 
   const logout = () => {
+    // Clear JWT tokens and user data
+    TokenManager.clearTokens();
     setUser(null);
-    localStorage.removeItem('user');
   };
 
   const value: AuthContextType = {

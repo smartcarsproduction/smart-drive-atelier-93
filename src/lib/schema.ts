@@ -7,6 +7,7 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   name: text('name').notNull(),
   phone: text('phone'),
+  password: text('password'), // Hashed password - nullable for Google OAuth users
   picture: text('picture'), // For Google OAuth profile pictures
   role: text('role').notNull().default('customer'), // 'customer', 'admin', 'technician'
   isActive: boolean('is_active').default(true),

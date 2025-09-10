@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { ServiceService } from '../../src/lib/db-services';
 import { z } from 'zod';
+import { requireAdmin } from '../middleware/auth';
 
 const router = Router();
 
@@ -54,7 +55,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create service (admin only)
-router.post('/', async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const serviceData = createServiceSchema.parse(req.body);
     const service = await ServiceService.create(serviceData);
@@ -69,7 +70,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update service (admin only)
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
   try {
     const updates = updateServiceSchema.parse(req.body);
     const service = await ServiceService.update(req.params.id, updates);

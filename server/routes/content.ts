@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { ContentService } from '../../src/lib/db-services';
 import { z } from 'zod';
+import { requireAdmin, AuthenticatedRequest } from '../middleware/auth';
 
 const router = Router();
 
@@ -18,8 +19,8 @@ const updateContentSchema = z.object({
   updatedBy: z.string().uuid().optional(),
 });
 
-// Get all content
-router.get('/', async (req, res) => {
+// Get all content (admin only)
+router.get('/', requireAdmin, async (req, res) => {
   try {
     const content = await ContentService.getAll();
     res.json(content);
@@ -54,11 +55,11 @@ router.get('/key/:key', async (req, res) => {
   }
 });
 
-// Create or update content
-router.put('/key/:key', async (req, res) => {
+// Create or update content (admin only)
+router.put('/key/:key', requireAdmin, async (req: AuthenticatedRequest, res) => {
   try {
     const { value, updatedBy } = updateContentSchema.parse(req.body);
-    const content = await ContentService.set(req.params.key, value, 'general', updatedBy);
+    const content = await ContentService.set(req.params.key, value, 'general', updatedBy || req.user!.id);
     res.json(content);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -69,11 +70,11 @@ router.put('/key/:key', async (req, res) => {
   }
 });
 
-// Create content with category
-router.post('/', async (req, res) => {
+// Create content with category (admin only)
+router.post('/', requireAdmin, async (req: AuthenticatedRequest, res) => {
   try {
     const { key, value, category, updatedBy } = createContentSchema.parse(req.body);
-    const content = await ContentService.set(key, value, category, updatedBy);
+    const content = await ContentService.set(key, value, category, updatedBy || req.user!.id);
     res.status(201).json(content);
   } catch (error) {
     if (error instanceof z.ZodError) {

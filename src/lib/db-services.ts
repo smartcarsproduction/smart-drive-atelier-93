@@ -10,12 +10,92 @@ import type {
   Content, NewContent,
   Notification, NewNotification
 } from './schema';
+import { PasswordUtils } from '../../server/utils/auth';
 
 // User Services
 export class UserService {
   static async create(userData: Omit<NewUser, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
     const [user] = await db.insert(users).values(userData).returning();
     return user;
+  }
+
+  /**
+   * Create a new user with password hashing
+   */
+  static async createWithPassword(userData: {
+    email: string;
+    name: string;
+    phone?: string;
+    password: string;
+    role?: string;
+  }): Promise<User> {
+    // Check if user already exists
+    const existing = await this.findByEmail(userData.email);
+    if (existing) {
+      throw new Error('User with this email already exists');
+    }
+
+    // Hash the password
+    const hashedPassword = await PasswordUtils.hashPassword(userData.password);
+
+    const newUserData: Omit<NewUser, 'id' | 'createdAt' | 'updatedAt'> = {
+      email: userData.email,
+      name: userData.name,
+      phone: userData.phone,
+      password: hashedPassword,
+      role: userData.role || 'customer',
+    };
+
+    return await this.create(newUserData);
+  }
+
+  /**
+   * Authenticate user with email and password
+   */
+  static async authenticateWithPassword(email: string, password: string): Promise<User | null> {
+    const user = await this.findByEmail(email);
+    if (!user || !user.password || !user.isActive) {
+      return null;
+    }
+
+    const isPasswordValid = await PasswordUtils.comparePassword(password, user.password);
+    if (!isPasswordValid) {
+      return null;
+    }
+
+    return user;
+  }
+
+  /**
+   * Update user password with proper hashing
+   */
+  static async updatePassword(userId: string, oldPassword: string, newPassword: string): Promise<boolean> {
+    const user = await this.findById(userId);
+    if (!user || !user.password) {
+      throw new Error('User not found or has no password');
+    }
+
+    // Verify old password
+    const isOldPasswordValid = await PasswordUtils.comparePassword(oldPassword, user.password);
+    if (!isOldPasswordValid) {
+      throw new Error('Current password is incorrect');
+    }
+
+    // Hash new password
+    const hashedNewPassword = await PasswordUtils.hashPassword(newPassword);
+
+    // Update user record
+    await this.update(userId, { password: hashedNewPassword });
+    return true;
+  }
+
+  /**
+   * Reset password (for admin use or forgot password flow)
+   */
+  static async resetPassword(userId: string, newPassword: string): Promise<boolean> {
+    const hashedPassword = await PasswordUtils.hashPassword(newPassword);
+    await this.update(userId, { password: hashedPassword });
+    return true;
   }
 
   static async findByEmail(email: string): Promise<User | null> {
@@ -40,6 +120,30 @@ export class UserService {
     return await db.select().from(users).where(eq(users.role, 'customer'));
   }
 
+  /**
+   * Get all users with optional role filtering
+   */
+  static async getAllUsers(role?: string): Promise<User[]> {
+    if (role) {
+      return await db.select().from(users).where(eq(users.role, role));
+    }
+    return await db.select().from(users);
+  }
+
+  /**
+   * Deactivate user account
+   */
+  static async deactivateUser(userId: string): Promise<void> {
+    await this.update(userId, { isActive: false });
+  }
+
+  /**
+   * Reactivate user account
+   */
+  static async reactivateUser(userId: string): Promise<void> {
+    await this.update(userId, { isActive: true });
+  }
+
   static async getOrCreateFromGoogle(googleUser: {
     email: string;
     name: string;
@@ -53,7 +157,16 @@ export class UserService {
       name: googleUser.name,
       picture: googleUser.picture,
       role: 'customer',
+      // Note: No password for Google OAuth users - they authenticate through Google
     });
+  }
+
+  /**
+   * Remove sensitive data from user object (for API responses)
+   */
+  static sanitizeUser(user: User): Omit<User, 'password'> {
+    const { password, ...sanitizedUser } = user;
+    return sanitizedUser;
   }
 }
 
