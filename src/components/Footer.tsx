@@ -14,12 +14,12 @@ const Footer = () => {
               Join the Smart Cars Elite Club
             </h3>
             <p className="text-primary/80 mb-6 max-w-2xl mx-auto">
-              Get exclusive updates on luxury automotive care, AI innovations, and premium service offerings.
+              Get exclusive updates on premium automotive care, AI innovations, and luxury service offerings across India.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
               <Input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Enter your email (e.g., raj@gmail.com)"
                 className="bg-background/90 border-0 text-foreground flex-1"
               />
               <Button variant="hero" className="w-full sm:w-auto sm:px-8">
@@ -39,7 +39,7 @@ const Footer = () => {
               <div className="w-8 h-8 bg-secondary rounded-md flex items-center justify-center">
                 <span className="text-primary font-bold text-lg">S</span>
               </div>
-              <span className="font-luxury text-xl font-semibold">Smart Cars</span>
+              <span className="font-luxury text-xl font-semibold">Smart Cars Elite</span>
             </div>
             <p className="text-primary-foreground/80 text-sm">
               Redefining the future of luxury automotive care through AI diagnostics, 
@@ -103,22 +103,22 @@ const Footer = () => {
               <div className="flex items-center space-x-3">
                 <Phone className="w-4 h-4 text-secondary" />
                 <div>
-                  <p className="text-sm text-primary-foreground/80">24/7 Emergency</p>
-                  <p className="text-sm font-medium">(555) 123-SMART</p>
+                  <p className="text-sm text-primary-foreground/80">24/7 Helpline</p>
+                  <p className="text-sm font-medium">+91 98765-43210</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-secondary" />
                 <div>
                   <p className="text-sm text-primary-foreground/80">Email</p>
-                  <p className="text-sm font-medium">elite@smartcars.com</p>
+                  <p className="text-sm font-medium">premium@smartcarselite.co.in</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-4 h-4 text-secondary" />
                 <div>
-                  <p className="text-sm text-primary-foreground/80">Location</p>
-                  <p className="text-sm font-medium">Beverly Hills, CA</p>
+                  <p className="text-sm text-primary-foreground/80">Service Center</p>
+                  <p className="text-sm font-medium">Lower Parel, Mumbai</p>
                 </div>
               </div>
             </div>
@@ -129,7 +129,7 @@ const Footer = () => {
         <div className="border-t border-primary-foreground/20 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-primary-foreground/60 text-sm">
-              © 2024 Smart Cars. All rights reserved.
+              © 2024 Smart Cars Elite. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <Link to="#" className="text-primary-foreground/60 hover:text-secondary transition-luxury text-sm">
