@@ -4,11 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, AlertTriangle, Lock, Eye, CheckCircle } from "lucide-react";
 
 const AdminSecurity = () => {
-  const threats = [
-    { id: 1, type: "Login Attempt", severity: "Medium", source: "192.168.1.100", time: "5 min ago", status: "Blocked" },
-    { id: 2, type: "SQL Injection", severity: "High", source: "45.76.123.45", time: "2 hours ago", status: "Blocked" },
-    { id: 3, type: "Brute Force", severity: "Low", source: "192.168.1.200", time: "1 day ago", status: "Monitored" },
-  ];
+  const threats: Array<{
+    id: number;
+    type: string;
+    severity: string;
+    source: string;
+    time: string;
+    status: string;
+  }> = [];
 
   return (
     <div className="space-y-6">
@@ -67,27 +70,35 @@ const AdminSecurity = () => {
         <div className="p-6">
           <h2 className="font-luxury text-xl font-bold text-primary mb-4">Recent Security Events</h2>
           <div className="space-y-4">
-            {threats.map((threat) => (
-              <div key={threat.id} className="flex items-center justify-between p-4 bg-card-luxury rounded-luxury">
-                <div className="flex items-center space-x-4">
-                  <div className={`w-10 h-10 ${threat.severity === 'High' ? 'bg-red-500/10' : threat.severity === 'Medium' ? 'bg-yellow-500/10' : 'bg-blue-500/10'} rounded-full flex items-center justify-center`}>
-                    <AlertTriangle className={`w-5 h-5 ${threat.severity === 'High' ? 'text-red-600' : threat.severity === 'Medium' ? 'text-yellow-600' : 'text-blue-600'}`} />
+            {threats.length > 0 ? (
+              threats.map((threat) => (
+                <div key={threat.id} className="flex items-center justify-between p-4 bg-card-luxury rounded-luxury">
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-10 h-10 ${threat.severity === 'High' ? 'bg-red-500/10' : threat.severity === 'Medium' ? 'bg-yellow-500/10' : 'bg-blue-500/10'} rounded-full flex items-center justify-center`}>
+                      <AlertTriangle className={`w-5 h-5 ${threat.severity === 'High' ? 'text-red-600' : threat.severity === 'Medium' ? 'text-yellow-600' : 'text-blue-600'}`} />
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-primary">{threat.type}</h3>
+                      <p className="text-sm text-muted-foreground">Source: {threat.source} • {threat.time}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-medium text-primary">{threat.type}</h3>
-                    <p className="text-sm text-muted-foreground">Source: {threat.source} • {threat.time}</p>
+                  <div className="flex items-center space-x-3">
+                    <Badge variant={threat.severity === 'High' ? 'destructive' : threat.severity === 'Medium' ? 'secondary' : 'outline'}>
+                      {threat.severity}
+                    </Badge>
+                    <Badge variant={threat.status === 'Blocked' ? 'default' : 'secondary'}>
+                      {threat.status}
+                    </Badge>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Badge variant={threat.severity === 'High' ? 'destructive' : threat.severity === 'Medium' ? 'secondary' : 'outline'}>
-                    {threat.severity}
-                  </Badge>
-                  <Badge variant={threat.status === 'Blocked' ? 'default' : 'secondary'}>
-                    {threat.status}
-                  </Badge>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <Shield className="w-16 h-16 text-accent mx-auto mb-4" />
+                <p className="text-lg text-muted-foreground mb-2">No security events</p>
+                <p className="text-sm text-muted-foreground">Your system is secure. Security events will appear here if detected.</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </Card>
