@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import GoogleLoginButton from "@/components/GoogleLoginButton";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -116,9 +117,7 @@ const Login = () => {
               Or continue with
             </p>
             
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">Social login options not configured</p>
-            </div>
+            <GoogleLoginButton />
           </div>
 
           <div className="mt-6 text-center">

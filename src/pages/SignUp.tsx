@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Eye, EyeOff, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import GoogleLoginButton from "@/components/GoogleLoginButton";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -386,9 +387,7 @@ const SignUp = () => {
                   Or sign up with
                 </p>
                 
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">Social signup options not configured</p>
-                </div>
+                <GoogleLoginButton />
               </div>
 
               <div className="mt-6 text-center">
