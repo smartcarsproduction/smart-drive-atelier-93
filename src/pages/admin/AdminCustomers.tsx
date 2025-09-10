@@ -2,18 +2,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Users, Search, Plus, Mail, Phone, Calendar } from "lucide-react";
+import { Users, Search, Plus, Mail, Phone, Calendar, Activity } from "lucide-react";
+import { useAdminCustomers } from "@/lib/admin-hooks";
 
 const AdminCustomers = () => {
-  const customers: Array<{
-    id: number;
-    name: string;
-    email: string;
-    phone: string;
-    joinDate: string;
-    bookings: number;
-    status: string;
-  }> = [];
+  const { data: customers = [], isLoading, error } = useAdminCustomers();
 
   return (
     <div className="space-y-6">
@@ -46,7 +39,13 @@ const AdminCustomers = () => {
         <div className="p-6">
           <h2 className="font-luxury text-xl font-bold text-primary mb-4">Customer Directory</h2>
           <div className="space-y-4">
-            {customers.length > 0 ? (
+            {isLoading ? (
+              <div className="text-center py-12">
+                <Activity className="w-12 h-12 text-accent mx-auto mb-4 animate-spin" />
+                <p className="text-lg text-muted-foreground mb-2">Loading customers...</p>
+                <p className="text-sm text-muted-foreground">Please wait while we fetch customer data</p>
+              </div>
+            ) : customers.length > 0 ? (
               customers.map((customer) => (
                 <div key={customer.id} className="p-4 bg-card-luxury rounded-luxury hover:shadow-elegant transition-luxury">
                   <div className="flex items-center justify-between">

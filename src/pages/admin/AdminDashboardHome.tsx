@@ -14,22 +14,19 @@ import {
   Bell,
   FileText
 } from "lucide-react";
+import { useAdminStats, useRecentBookings } from "@/lib/admin-hooks";
 
 const AdminDashboardHome = () => {
-  const stats: Array<{
-    label: string;
-    value: string;
-    icon: React.ComponentType<{ className?: string }>;
-    change: string;
-  }> = [];
+  const { data: stats = [], isLoading: statsLoading } = useAdminStats();
+  const { data: recentBookings = [], isLoading: bookingsLoading } = useRecentBookings(5);
 
-  const recentBookings: Array<{
-    id: string;
-    customer: string;
-    service: string;
-    date: string;
-    status: string;
-  }> = [];
+  // Icon mapping for stats
+  const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
+    Users,
+    Calendar,
+    Car,
+    DollarSign
+  };
 
   return (
     <div className="space-y-6">
@@ -55,14 +52,14 @@ const AdminDashboardHome = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.length > 0 ? (
           stats.map((stat, index) => {
-            const IconComponent = stat.icon;
+            const IconComponent = iconMap[stat.icon] || TrendingUp;
             return (
               <Card key={index} className="p-6 shadow-elegant hover:shadow-luxury transition-luxury group cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
                     <p className="text-2xl font-bold text-primary">{stat.value}</p>
-                    <p className="text-sm text-secondary font-medium">{stat.change} from last month</p>
+                    <p className="text-sm text-secondary font-medium">{stat.change}</p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-luxury rounded-full flex items-center justify-center group-hover:scale-110 transition-luxury">
                     <IconComponent className="w-6 h-6 text-primary" />
@@ -71,6 +68,12 @@ const AdminDashboardHome = () => {
               </Card>
             );
           })
+        ) : statsLoading ? (
+          <Card className="col-span-full p-8 text-center">
+            <Activity className="w-12 h-12 text-accent mx-auto mb-4 animate-spin" />
+            <p className="text-lg text-muted-foreground mb-2">Loading statistics...</p>
+            <p className="text-sm text-muted-foreground">Please wait while we fetch your data</p>
+          </Card>
         ) : (
           <Card className="col-span-full p-8 text-center">
             <TrendingUp className="w-12 h-12 text-accent mx-auto mb-4" />
@@ -108,6 +111,11 @@ const AdminDashboardHome = () => {
                   </div>
                 </div>
               ))
+            ) : bookingsLoading ? (
+              <div className="text-center py-8">
+                <Activity className="w-8 h-8 text-accent mx-auto mb-4 animate-spin" />
+                <p className="text-muted-foreground">Loading recent bookings...</p>
+              </div>
             ) : (
               <div className="text-center py-8">
                 <Calendar className="w-12 h-12 text-accent mx-auto mb-4" />
