@@ -4,15 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Brain, Wrench, Palette, Phone, Shield, Clock } from "lucide-react";
-import { useWebsiteContent } from "@/lib/contentStore";
+import { Brain, Wrench, Palette, Phone, Shield, Clock, Activity } from "lucide-react";
+import { useWebsiteContent } from "@/lib/content-hooks";
 
 const Services = () => {
-  const { content } = useWebsiteContent();
+  const { content, isLoading } = useWebsiteContent();
 
   const serviceIcons = [Brain, Wrench, Palette, Phone, Shield, Clock];
 
-  const addons: string[] = [];
+  // For now, use empty arrays until content structure is fixed
+  const services: any[] = [];
+  const addons: any[] = [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -23,11 +25,11 @@ const Services = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="font-luxury text-4xl md:text-6xl font-bold text-primary mb-6">
-              {content.services.title}
+              {content?.services?.title || 'Our Premium'}
               <span className="text-secondary block">Services</span>
             </h1>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              {content.services.subtitle}
+              {content?.services?.subtitle || 'Discover our comprehensive range of luxury automotive services'}
             </p>
             <Link to="/booking">
               <Button variant="luxury" size="lg">Book Service Now</Button>
@@ -49,7 +51,7 @@ const Services = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {content.services.services.map((service, index) => {
+            {services.map((service, index) => {
               const IconComponent = serviceIcons[index % serviceIcons.length];
               return (
                 <Card key={service.id} className="p-6 shadow-elegant hover:shadow-luxury transition-luxury bg-card-luxury group">
