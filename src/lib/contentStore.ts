@@ -48,91 +48,42 @@ interface WebsiteContent {
   };
 }
 
-// Default content
+// Default content - now empty to remove hardcoded values
 const defaultContent: WebsiteContent = {
   homepage: {
-    heroTitle: "Elite Customer Support",
-    heroSubtitle: "Experience personalized support from our dedicated concierge team. We're available 24/7 to ensure your luxury automotive needs are met with precision and care.",
-    heroImage: "/src/assets/hero-luxury-car.jpg",
-    heroButton: "Book Elite Service",
-    servicesTitle: "Premium Automotive Services",
-    aboutTitle: "Smart Cars Elite",
-    aboutDescription: "Redefining luxury automotive care with AI-powered diagnostics and precision engineering."
+    heroTitle: "",
+    heroSubtitle: "",
+    heroImage: "",
+    heroButton: "",
+    servicesTitle: "",
+    aboutTitle: "",
+    aboutDescription: ""
   },
   services: {
-    title: "Premium Services",
-    subtitle: "Experience the future of automotive care with our AI-powered diagnostic services and expert craftsmanship.",
-    services: [
-      {
-        id: "ai-diagnostics",
-        name: "AI Diagnostics",
-        description: "Advanced AI-powered vehicle diagnostics for precise problem identification.",
-        price: "₹15,999",
-        duration: "2 hours",
-        image: "/src/assets/hero-luxury-car.jpg"
-      },
-      {
-        id: "engine-rebuild",
-        name: "Engine Rebuild",
-        description: "Complete engine rebuilding service with precision engineering.",
-        price: "₹1,49,999",
-        duration: "5 days",
-        image: "/src/assets/hero-luxury-car.jpg"
-      },
-      {
-        id: "smart-customization",
-        name: "Smart Customization",
-        description: "AI-assisted vehicle customization for enhanced performance.",
-        price: "₹79,999",
-        duration: "3 days",
-        image: "/src/assets/hero-luxury-car.jpg"
-      },
-      {
-        id: "predictive-maintenance",
-        name: "Predictive Maintenance",
-        description: "Proactive maintenance using AI prediction algorithms.",
-        price: "₹11,999",
-        duration: "1 hour",
-        image: "/src/assets/hero-luxury-car.jpg"
-      }
-    ]
+    title: "",
+    subtitle: "",
+    services: []
   },
   about: {
-    title: "About Smart Cars Elite",
-    subtitle: "Pioneering the future of luxury automotive care",
-    description: "Smart Cars Elite represents the pinnacle of automotive excellence, where cutting-edge AI technology meets traditional craftsmanship. We've revolutionized vehicle care through predictive diagnostics, precision engineering, and unparalleled customer service.",
-    features: [
-      {
-        title: "AI-Powered Diagnostics",
-        description: "Advanced machine learning algorithms for precise vehicle analysis",
-        icon: "Brain"
-      },
-      {
-        title: "Expert Craftsmanship",
-        description: "Master technicians with decades of luxury automotive experience",
-        icon: "Award"
-      },
-      {
-        title: "24/7 Premium Support",
-        description: "Round-the-clock concierge service for all your automotive needs",
-        icon: "Clock"
-      }
-    ]
+    title: "",
+    subtitle: "",
+    description: "",
+    features: []
   },
   contact: {
-    title: "Elite Customer Support",
-    subtitle: "Experience personalized support from our dedicated concierge team.",
-    phone: "+91 98765-43210",
-    email: "premium@smartcarselite.co.in",
-    address: "Phoenix Mills Compound, Lower Parel, Mumbai - 400013, Maharashtra",
-    hours: "Mon-Sat: 9:00 AM - 8:00 PM, Sun: 10:00 AM - 6:00 PM"
+    title: "",
+    subtitle: "",
+    phone: "",
+    email: "",
+    address: "",
+    hours: ""
   },
   footer: {
-    companyName: "Smart Cars Elite",
-    description: "Redefining the future of luxury automotive care through AI diagnostics, precision engineering, and timeless craftsmanship.",
-    phone: "+91 98765-43210",
-    email: "premium@smartcarselite.co.in",
-    address: "Lower Parel, Mumbai"
+    companyName: "",
+    description: "",
+    phone: "",
+    email: "",
+    address: ""
   }
 };
 
