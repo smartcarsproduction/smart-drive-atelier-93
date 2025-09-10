@@ -22,10 +22,9 @@ const AdminAnalytics = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Page Views</p>
-              <p className="text-2xl font-bold text-primary">45,821</p>
-              <div className="flex items-center text-green-600 text-sm">
-                <ArrowUp className="w-3 h-3 mr-1" />
-                +25%
+              <p className="text-2xl font-bold text-primary">-</p>
+              <div className="flex items-center text-muted-foreground text-sm">
+                No data
               </div>
             </div>
           </div>
@@ -38,10 +37,9 @@ const AdminAnalytics = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Unique Visitors</p>
-              <p className="text-2xl font-bold text-primary">15,432</p>
-              <div className="flex items-center text-green-600 text-sm">
-                <ArrowUp className="w-3 h-3 mr-1" />
-                +18%
+              <p className="text-2xl font-bold text-primary">-</p>
+              <div className="flex items-center text-muted-foreground text-sm">
+                No data
               </div>
             </div>
           </div>
@@ -54,10 +52,9 @@ const AdminAnalytics = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Bounce Rate</p>
-              <p className="text-2xl font-bold text-primary">32.1%</p>
-              <div className="flex items-center text-red-600 text-sm">
-                <ArrowDown className="w-3 h-3 mr-1" />
-                -5%
+              <p className="text-2xl font-bold text-primary">-</p>
+              <div className="flex items-center text-muted-foreground text-sm">
+                No data
               </div>
             </div>
           </div>
@@ -70,10 +67,9 @@ const AdminAnalytics = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Avg Session</p>
-              <p className="text-2xl font-bold text-primary">4m 32s</p>
-              <div className="flex items-center text-green-600 text-sm">
-                <ArrowUp className="w-3 h-3 mr-1" />
-                +12%
+              <p className="text-2xl font-bold text-primary">-</p>
+              <div className="flex items-center text-muted-foreground text-sm">
+                No data
               </div>
             </div>
           </div>
@@ -84,45 +80,19 @@ const AdminAnalytics = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="p-6 shadow-luxury">
           <h2 className="font-luxury text-xl font-bold text-primary mb-4">Top Pages</h2>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">/services</span>
-              <span className="font-medium">2,341 views</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">/</span>
-              <span className="font-medium">1,987 views</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">/about</span>
-              <span className="font-medium">1,234 views</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">/booking</span>
-              <span className="font-medium">987 views</span>
-            </div>
+          <div className="text-center py-8">
+            <TrendingUp className="w-12 h-12 text-accent mx-auto mb-4" />
+            <p className="text-lg text-muted-foreground mb-2">No page data available</p>
+            <p className="text-sm text-muted-foreground">Page analytics will appear here once data is collected</p>
           </div>
         </Card>
 
         <Card className="p-6 shadow-luxury">
           <h2 className="font-luxury text-xl font-bold text-primary mb-4">Traffic Sources</h2>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Direct</span>
-              <span className="font-medium">45.2%</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Search Engines</span>
-              <span className="font-medium">32.1%</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Social Media</span>
-              <span className="font-medium">12.7%</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Referrals</span>
-              <span className="font-medium">10.0%</span>
-            </div>
+          <div className="text-center py-8">
+            <Globe className="w-12 h-12 text-accent mx-auto mb-4" />
+            <p className="text-lg text-muted-foreground mb-2">No traffic data available</p>
+            <p className="text-sm text-muted-foreground">Traffic source analytics will appear here once data is collected</p>
           </div>
         </Card>
       </div>

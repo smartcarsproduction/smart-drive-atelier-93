@@ -12,37 +12,13 @@ import heroImage from "@/assets/hero-luxury-car.jpg";
 const Index = () => {
   const { content } = useWebsiteContent();
 
-  const coreValues = [
-    {
-      icon: Zap,
-      title: "Innovation",
-      description: "Pioneering AI-driven automotive solutions that set new industry standards."
-    },
-    {
-      icon: Award,
-      title: "Precision",
-      description: "Meticulous attention to detail in every service and customization."
-    },
-    {
-      icon: Users,
-      title: "Excellence", 
-      description: "Delivering unparalleled luxury experiences that exceed expectations."
-    },
-    {
-      icon: Leaf,
-      title: "Sustainability",
-      description: "Committed to environmentally conscious luxury automotive solutions."
-    }
-  ];
+  const coreValues: Array<{
+    icon: React.ComponentType<{ className?: string }>;
+    title: string;
+    description: string;
+  }> = [];
 
-  const features = [
-    "AI-Powered Diagnostics",
-    "Master Craftsmen Team",
-    "White-Glove Service",
-    "24/7 Elite Support",
-    "Predictive Maintenance",
-    "Luxury Customization"
-  ];
+  const features: string[] = [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -116,7 +92,7 @@ const Index = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             <Card className="p-4 sm:p-6 lg:p-8 text-center shadow-elegant bg-card-luxury hover:shadow-luxury transition-luxury">
               <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-secondary mb-2">
-                <StatsCounter end={500} suffix="+" />
+                <StatsCounter end={0} suffix="" />
               </div>
               <div className="text-base sm:text-lg font-medium text-primary mb-1">Cars Restored</div>
               <div className="text-xs sm:text-sm text-muted-foreground">Luxury vehicles perfected</div>
@@ -124,7 +100,7 @@ const Index = () => {
             
             <Card className="p-4 sm:p-6 lg:p-8 text-center shadow-elegant bg-card-luxury hover:shadow-luxury transition-luxury">
               <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-secondary mb-2">
-                <StatsCounter end={4} />
+                <StatsCounter end={0} />
               </div>
               <div className="text-base sm:text-lg font-medium text-primary mb-1">Years of Excellence</div>
               <div className="text-xs sm:text-sm text-muted-foreground">Pioneering AI-driven care</div>
@@ -132,14 +108,14 @@ const Index = () => {
             
             <Card className="p-4 sm:p-6 lg:p-8 text-center shadow-elegant bg-card-luxury hover:shadow-luxury transition-luxury">
               <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-secondary mb-2">
-                <StatsCounter end={98} suffix="%" />
+                <StatsCounter end={0} suffix="" />
               </div>
               <div className="text-base sm:text-lg font-medium text-primary mb-1">Satisfaction Rate</div>
               <div className="text-xs sm:text-sm text-muted-foreground">Elite client approval</div>
             </Card>
             
             <Card className="p-4 sm:p-6 lg:p-8 text-center shadow-elegant bg-card-luxury hover:shadow-luxury transition-luxury">
-              <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-secondary mb-2">24/7</div>
+              <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-secondary mb-2">-</div>
               <div className="text-base sm:text-lg font-medium text-primary mb-1">Elite Support</div>
               <div className="text-xs sm:text-sm text-muted-foreground">Always available assistance</div>
             </Card>
@@ -288,7 +264,7 @@ const Index = () => {
           </div>
           
           <div className="mt-8 text-sm text-primary/60">
-            <p>24/7 Emergency Hotline: <span className="font-medium text-primary">+91 98765 43210</span></p>
+            <p>Emergency Support: <span className="font-medium text-primary">Contact Information Not Available</span></p>
           </div>
         </div>
       </section>

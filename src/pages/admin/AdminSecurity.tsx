@@ -35,7 +35,7 @@ const AdminSecurity = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Security Score</p>
-              <p className="text-2xl font-bold text-primary">95/100</p>
+              <p className="text-2xl font-bold text-primary">-</p>
             </div>
           </div>
         </Card>
@@ -47,7 +47,7 @@ const AdminSecurity = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Threats Blocked</p>
-              <p className="text-2xl font-bold text-primary">23</p>
+              <p className="text-2xl font-bold text-primary">-</p>
             </div>
           </div>
         </Card>
@@ -59,7 +59,7 @@ const AdminSecurity = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Active Monitors</p>
-              <p className="text-2xl font-bold text-primary">12</p>
+              <p className="text-2xl font-bold text-primary">-</p>
             </div>
           </div>
         </Card>
