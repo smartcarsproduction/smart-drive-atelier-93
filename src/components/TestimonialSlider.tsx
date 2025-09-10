@@ -6,36 +6,13 @@ import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 const TestimonialSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const testimonials = [
-    {
-      name: "James Morrison",
-      title: "CEO, Morrison Holdings",
-      vehicle: "2024 Rolls-Royce Phantom",
-      rating: 5,
-      text: "Smart Cars transformed my Phantom beyond expectations. Their AI diagnostics caught issues my previous mechanic missed, and the craftsmanship is absolutely flawless. This is luxury automotive care redefined."
-    },
-    {
-      name: "Sarah Chen",
-      title: "Tech Executive",
-      vehicle: "2023 Porsche 911 Turbo S",
-      rating: 5,
-      text: "The predictive maintenance system is revolutionary. They knew my Porsche needed attention before I even noticed anything. The white-glove service and attention to detail is unmatched in the industry."
-    },
-    {
-      name: "Michael Rodriguez",
-      title: "Investment Banker",
-      vehicle: "2024 Mercedes-AMG GT",
-      rating: 5,
-      text: "Emergency roadside assistance saved my important client meeting. Within 20 minutes, they had me in a luxury loaner and my AMG GT was being transported to their facility. Exceptional service, every time."
-    },
-    {
-      name: "Victoria Ashford",
-      title: "Luxury Real Estate Broker",
-      vehicle: "2023 Bentley Continental GT",
-      rating: 5,
-      text: "The customization work on my Continental GT is simply breathtaking. Smart Cars understood my vision perfectly and delivered beyond imagination. It's not just service, it's automotive artistry."
-    }
-  ];
+  const testimonials: Array<{
+    name: string;
+    title: string;
+    vehicle: string;
+    rating: number;
+    text: string;
+  }> = [];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -54,6 +31,20 @@ const TestimonialSlider = () => {
   const prevTestimonial = () => {
     setCurrentIndex(currentIndex === 0 ? testimonials.length - 1 : currentIndex - 1);
   };
+
+  if (testimonials.length === 0) {
+    return (
+      <div className="relative max-w-4xl mx-auto">
+        <Card className="p-8 shadow-luxury bg-card-luxury">
+          <div className="text-center py-12">
+            <Star className="w-12 h-12 text-accent mx-auto mb-4" />
+            <p className="text-lg text-muted-foreground mb-2">No testimonials available</p>
+            <p className="text-sm text-muted-foreground">Check back later for customer reviews</p>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="relative max-w-4xl mx-auto">
