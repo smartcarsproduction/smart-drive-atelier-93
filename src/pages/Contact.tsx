@@ -20,7 +20,7 @@ const Contact = () => {
       icon: Phone,
       title: "24/7 Emergency Helpline",
       details: "+91 98765-43210",
-      description: "तत्काल सहायता for urgent automotive needs across India",
+      description: "Immediate assistance for urgent automotive needs across India",
       action: "Call Now"
     },
     {
