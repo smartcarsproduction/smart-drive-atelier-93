@@ -1,14 +1,28 @@
 // API Client for Smart Cars Elite Backend
 
-// Get the current domain and use it for API calls in Replit environment
-const getCurrentDomain = () => {
-  if (typeof window !== 'undefined') {
+// Environment-aware API URL configuration
+const getApiBaseUrl = () => {
+  // If VITE_API_URL is explicitly set, use it (allows custom deployments)
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+
+  // Handle server-side rendering or non-browser environments
+  if (typeof window === 'undefined') {
+    return import.meta.env.DEV ? 'http://localhost:3001' : '';
+  }
+
+  // Browser environment: use environment-aware URL
+  if (import.meta.env.DEV) {
+    // Development: use port 3001 for backend
+    return `${window.location.protocol}//${window.location.hostname}:3001`;
+  } else {
+    // Production: use same-origin (no explicit port)
     return window.location.origin;
   }
-  return 'http://localhost:3001';
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || getCurrentDomain();
+const API_BASE_URL = getApiBaseUrl();
 
 class ApiError extends Error {
   constructor(
