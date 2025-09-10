@@ -1,6 +1,14 @@
 // API Client for Smart Cars Elite Backend
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+// Get the current domain and use it for API calls in Replit environment
+const getCurrentDomain = () => {
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  return 'http://localhost:3001';
+};
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || getCurrentDomain();
 
 class ApiError extends Error {
   constructor(
