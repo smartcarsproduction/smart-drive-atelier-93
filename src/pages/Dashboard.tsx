@@ -44,7 +44,7 @@ const Dashboard = () => {
           {/* Header */}
           <div className="mb-8">
             <h1 className="font-luxury text-3xl md:text-4xl font-bold text-primary mb-2">
-              Welcome back, John
+              Welcome back
             </h1>
             <p className="text-muted-foreground">
               Manage your elite automotive services and vehicle profiles
@@ -62,7 +62,7 @@ const Dashboard = () => {
               <div className="text-sm text-muted-foreground">Upcoming Services</div>
             </Card>
             <Card className="p-6 shadow-elegant bg-card-luxury text-center">
-              <div className="text-2xl font-bold text-secondary mb-1">₹10,67,325</div>
+              <div className="text-2xl font-bold text-secondary mb-1">-</div>
               <div className="text-sm text-muted-foreground">Total Services</div>
             </Card>
             <Card className="p-6 shadow-elegant bg-card-luxury text-center">
@@ -267,7 +267,7 @@ const Dashboard = () => {
               </div>
               <Button variant="hero">
                 <Phone className="w-4 h-4 mr-2" />
-                +91 98765 43210
+                Contact Support
               </Button>
             </div>
           </Card>

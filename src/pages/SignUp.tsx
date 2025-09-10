@@ -77,7 +77,7 @@ const SignUp = () => {
                 <Label htmlFor="firstName" className="text-primary font-medium">First Name</Label>
                 <Input
                   id="firstName"
-                  placeholder="John"
+                  placeholder="First name"
                   value={formData.firstName}
                   onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                   className="bg-background border-accent-light focus:border-secondary"
@@ -88,7 +88,7 @@ const SignUp = () => {
                 <Label htmlFor="lastName" className="text-primary font-medium">Last Name</Label>
                 <Input
                   id="lastName"
-                  placeholder="Smith"
+                  placeholder="Last name"
                   value={formData.lastName}
                   onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                   className="bg-background border-accent-light focus:border-secondary"
@@ -102,7 +102,7 @@ const SignUp = () => {
               <Input
                 id="email"
                 type="email"
-                placeholder="john.smith@example.com"
+                placeholder="Your email address"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="bg-background border-accent-light focus:border-secondary"
@@ -115,7 +115,7 @@ const SignUp = () => {
               <Input
                 id="phone"
                 type="tel"
-                placeholder="+1 (555) 123-4567"
+                placeholder="Your phone number"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="bg-background border-accent-light focus:border-secondary"
@@ -386,17 +386,8 @@ const SignUp = () => {
                   Or sign up with
                 </p>
                 
-                <div className="grid grid-cols-3 gap-3">
-                  {["Google", "Apple", "Microsoft"].map((provider) => (
-                    <Button
-                      key={provider}
-                      variant="elegant"
-                      className="w-full text-xs"
-                      onClick={() => handleSocialSignUp(provider)}
-                    >
-                      {provider}
-                    </Button>
-                  ))}
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">Social signup options not configured</p>
                 </div>
               </div>
 
@@ -416,7 +407,7 @@ const SignUp = () => {
         <div className="text-center mt-6">
           <p className="text-sm text-muted-foreground">
             Need immediate assistance?{" "}
-            <span className="text-secondary font-medium">Call +91 98765 43210</span>
+            <span className="text-secondary font-medium">Contact Support</span>
           </p>
         </div>
       </div>

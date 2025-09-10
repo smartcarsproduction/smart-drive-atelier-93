@@ -116,17 +116,8 @@ const Login = () => {
               Or continue with
             </p>
             
-            <div className="grid grid-cols-3 gap-3">
-              {["Google", "Apple", "Microsoft"].map((provider) => (
-                <Button
-                  key={provider}
-                  variant="elegant"
-                  className="w-full text-xs"
-                  onClick={() => handleSocialLogin(provider)}
-                >
-                  {provider}
-                </Button>
-              ))}
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">Social login options not configured</p>
             </div>
           </div>
 
@@ -156,7 +147,7 @@ const Login = () => {
         <div className="text-center mt-6">
           <p className="text-sm text-muted-foreground">
             Need immediate assistance?{" "}
-            <span className="text-secondary font-medium">Call +91 98765 43210</span>
+            <span className="text-secondary font-medium">Contact Support</span>
           </p>
         </div>
       </div>

@@ -173,7 +173,7 @@ const Contact = () => {
                   <Input
                     id="phone"
                     type="tel"
-                    placeholder="+91 98765-43210"
+                    placeholder="Your mobile number"
                     className="bg-background border-accent-light focus:border-secondary"
                   />
                 </div>
