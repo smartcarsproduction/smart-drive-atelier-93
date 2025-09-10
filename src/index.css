@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Smart Cars Luxury Design System - All colors MUST be HSL */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* Luxury Backgrounds */
+    --background: 42 15% 98%;           /* Ivory white */
+    --background-secondary: 0 0% 100%;  /* Pure white */
+    --background-muted: 210 20% 96%;    /* Soft gray */
+    --foreground: 225 50% 12%;          /* Deep navy text */
+
+    /* Luxury Brand Colors */
+    --primary: 225 50% 12%;             /* Deep navy */
+    --primary-foreground: 42 15% 98%;   /* Ivory on navy */
+    --primary-hover: 225 60% 8%;        /* Darker navy hover */
+
+    --secondary: 45 85% 70%;            /* Champagne gold */
+    --secondary-foreground: 225 50% 12%; /* Navy on gold */
+    --secondary-hover: 45 90% 65%;      /* Richer gold hover */
+
+    /* Luxury Accents */
+    --accent: 210 15% 75%;              /* Metallic silver */
+    --accent-foreground: 225 50% 12%;   /* Navy on silver */
+    --accent-light: 210 20% 90%;        /* Light silver */
+
+    /* UI Elements */
+    --card: 0 0% 100%;
+    --card-foreground: 225 50% 12%;
+    --card-luxury: 42 15% 98%;          /* Ivory cards */
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 50% 12%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 225 25% 45%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 210 20% 92%;
+    --input: 210 20% 92%;
+    --ring: 45 85% 70%;                 /* Gold focus ring */
+
+    /* Luxury Gradients */
+    --gradient-luxury: linear-gradient(135deg, hsl(45 85% 70%) 0%, hsl(45 75% 65%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(225 50% 12%) 0%, hsl(225 60% 8%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(42 15% 98%) 0%, hsl(0 0% 100%) 100%);
+
+    /* Luxury Shadows */
+    --shadow-luxury: 0 10px 40px -10px hsl(225 50% 12% / 0.1);
+    --shadow-gold: 0 8px 30px -8px hsl(45 85% 70% / 0.3);
+    --shadow-elegant: 0 4px 20px -4px hsl(225 50% 12% / 0.08);
+
+    /* Animation Timings */
+    --transition-luxury: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --radius: 0.5rem;
+
+    /* Luxury Spacing */
+    --spacing-luxury: 1.5rem;
+    --spacing-elegant: 2rem;
+
+    /* Typography Scale */
+    --text-hero: clamp(2.5rem, 5vw, 4.5rem);
+    --text-title: clamp(1.875rem, 3.5vw, 2.5rem);
+    --text-body: 1rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-luxury;
+  }
+
+  .luxury-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .luxury-card {
+    @apply bg-card-luxury shadow-elegant rounded-luxury border border-accent-light;
+  }
+
+  .luxury-button {
+    @apply bg-gradient-luxury text-primary hover:shadow-gold transition-luxury;
+  }
+
+  .hero-text {
+    @apply text-hero font-bold leading-tight;
+  }
+
+  .title-text {
+    @apply text-title font-semibold;
+  }
+
+  .gradient-text {
+    background: var(--gradient-luxury);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
