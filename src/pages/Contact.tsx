@@ -18,30 +18,30 @@ const Contact = () => {
   const contactMethods = [
     {
       icon: Phone,
-      title: "24/7 Emergency Hotline",
-      details: "+91 98765 43210",
-      description: "Immediate assistance for urgent automotive needs",
+      title: "24/7 Emergency Helpline",
+      details: "+91 98765-43210",
+      description: "तत्काल सहायता for urgent automotive needs across India",
       action: "Call Now"
     },
     {
       icon: Mail,
-      title: "Elite Concierge",
-      details: "elite@smartcars.in",
+      title: "Premium Concierge",
+      details: "premium@smartcarselite.co.in",
       description: "Personalized service coordination and inquiries",
       action: "Email Us"
     },
     {
       icon: MapPin,
-      title: "Mumbai Location",
-      details: "Phoenix Mills Compound, Lower Parel, Mumbai 400013",
-      description: "Visit our luxury service center",
+      title: "Mumbai Service Center",
+      details: "Phoenix Mills Compound, Lower Parel, Mumbai - 400013, Maharashtra",
+      description: "Visit our flagship luxury service center",
       action: "Get Directions"
     },
     {
       icon: Clock,
-      title: "Service Hours",
-      details: "Mon-Fri: 9AM-8PM, Sat: 10AM-6PM",
-      description: "Extended hours for elite members",
+      title: "Service Hours (IST)",
+      details: "Mon-Sat: 9:00 AM - 8:00 PM, Sun: 10:00 AM - 6:00 PM",
+      description: "Extended hours for premium members",
       action: "Schedule Visit"
     }
   ];
@@ -160,7 +160,7 @@ const Contact = () => {
                     <Label htmlFor="firstName" className="text-primary font-medium">First Name</Label>
                     <Input
                       id="firstName"
-                      placeholder="John"
+                      placeholder="Raj"
                       className="bg-background border-accent-light focus:border-secondary"
                       required
                     />
@@ -169,7 +169,7 @@ const Contact = () => {
                     <Label htmlFor="lastName" className="text-primary font-medium">Last Name</Label>
                     <Input
                       id="lastName"
-                      placeholder="Smith"
+                      placeholder="Sharma"
                       className="bg-background border-accent-light focus:border-secondary"
                       required
                     />
@@ -181,18 +181,18 @@ const Contact = () => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="john.smith@example.com"
+                    placeholder="raj.sharma@gmail.com"
                     className="bg-background border-accent-light focus:border-secondary"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-primary font-medium">Phone Number</Label>
+                  <Label htmlFor="phone" className="text-primary font-medium">Mobile Number</Label>
                   <Input
                     id="phone"
                     type="tel"
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="+91 98765-43210"
                     className="bg-background border-accent-light focus:border-secondary"
                   />
                 </div>
@@ -204,11 +204,13 @@ const Contact = () => {
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="consultation">Exclusive Consultation</SelectItem>
-                      <SelectItem value="emergency">Emergency Assistance</SelectItem>
-                      <SelectItem value="quote">VIP Quote Request</SelectItem>
-                      <SelectItem value="service">Service Inquiry</SelectItem>
-                      <SelectItem value="customization">Custom Work Request</SelectItem>
+                      <SelectItem value="consultation">Premium Consultation</SelectItem>
+                      <SelectItem value="emergency">Emergency Roadside Assistance</SelectItem>
+                      <SelectItem value="quote">VIP Service Quote</SelectItem>
+                      <SelectItem value="service">General Service Inquiry</SelectItem>
+                      <SelectItem value="customization">Vehicle Customization</SelectItem>
+                      <SelectItem value="insurance">Insurance Claims Support</SelectItem>
+                      <SelectItem value="warranty">Warranty Service</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
@@ -218,7 +220,7 @@ const Contact = () => {
                   <Label htmlFor="vehicle" className="text-primary font-medium">Vehicle Information (Optional)</Label>
                   <Input
                     id="vehicle"
-                    placeholder="e.g., 2024 Mercedes S-Class"
+                    placeholder="e.g., 2024 Tata Harrier, Mahindra XUV700, BMW X3"
                     className="bg-background border-accent-light focus:border-secondary"
                   />
                 </div>
@@ -283,14 +285,17 @@ const Contact = () => {
         <div className="mt-16">
           <Card className="p-8 shadow-luxury">
             <h2 className="font-luxury text-2xl font-bold text-primary mb-6 text-center">
-              Visit Our Mumbai Location
+              Visit Our Mumbai Service Center
             </h2>
             <div className="bg-accent-light rounded-luxury h-64 flex items-center justify-center">
               <div className="text-center">
                 <MapPin className="w-12 h-12 text-secondary mx-auto mb-4" />
                 <p className="text-lg font-medium text-primary mb-2">Phoenix Mills Compound</p>
-                <p className="text-muted-foreground mb-4">Lower Parel, Mumbai 400013</p>
-                <Button variant="luxury">Get Directions</Button>
+                <p className="text-muted-foreground mb-4">Lower Parel, Mumbai - 400013, Maharashtra, India</p>
+                <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+                  <Button variant="luxury">Get Directions</Button>
+                  <Button variant="elegant">Call Service Center</Button>
+                </div>
               </div>
             </div>
           </Card>
