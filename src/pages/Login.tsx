@@ -8,28 +8,36 @@ import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { loginWithEmail } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate login - in real app, this would call an API
-    toast.success("Login successful! Welcome to Smart Cars Elite.");
-    navigate("/dashboard");
+    setIsLoading(true);
+    
+    try {
+      await loginWithEmail(formData.email, formData.password);
+      toast.success("Login successful! Welcome to Smart Cars Elite.");
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSocialLogin = (provider: string) => {
     toast.success(`Logging in with ${provider}...`);
-    // Simulate successful social login
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1000);
+    // Google login is handled by GoogleLoginButton component
   };
 
   return (
@@ -106,8 +114,8 @@ const Login = () => {
               </Link>
             </div>
 
-            <Button type="submit" variant="luxury" className="w-full">
-              Sign In
+            <Button type="submit" variant="luxury" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>
 
