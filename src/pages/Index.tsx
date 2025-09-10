@@ -6,9 +6,12 @@ import TestimonialSlider from "@/components/TestimonialSlider";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Zap, Award, Users, Leaf, ArrowRight, CheckCircle } from "lucide-react";
+import { useWebsiteContent } from "@/lib/contentStore";
 import heroImage from "@/assets/hero-luxury-car.jpg";
 
 const Index = () => {
+  const { content } = useWebsiteContent();
+
   const coreValues = [
     {
       icon: Zap,
@@ -59,18 +62,17 @@ const Index = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="max-w-3xl">
             <h1 className="font-luxury text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-foreground mb-4 sm:mb-6 leading-tight">
-              Smart Cars
-              <span className="text-secondary block">Redefining the Future</span>
+              {content.homepage.heroTitle}
+              <span className="text-secondary block">{content.homepage.aboutTitle}</span>
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-primary-foreground/90 mb-6 sm:mb-8 leading-relaxed">
-              AI diagnostics, precision engineering, timeless craftsmanship. 
-              Experience luxury automotive care that transcends expectations.
+              {content.homepage.heroSubtitle}
             </p>
             
             <div className="flex flex-col sm:flex-row xl:flex-row gap-3 sm:gap-4 mb-8 sm:mb-12">
               <Link to="/booking" className="w-full sm:w-auto">
                 <Button variant="luxury" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8">
-                  Book a Service
+                  {content.homepage.heroButton}
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
                 </Button>
               </Link>

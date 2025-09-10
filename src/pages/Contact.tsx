@@ -8,8 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Phone, Mail, MapPin, Clock, MessageCircle, Shield, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { useWebsiteContent } from "@/lib/contentStore";
 
 const Contact = () => {
+  const { content } = useWebsiteContent();
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast.success("Message sent! Our concierge team will contact you within 2 hours.");
@@ -19,28 +22,28 @@ const Contact = () => {
     {
       icon: Phone,
       title: "24/7 Emergency Helpline",
-      details: "+91 98765-43210",
+      details: content.contact.phone,
       description: "Immediate assistance for urgent automotive needs across India",
       action: "Call Now"
     },
     {
       icon: Mail,
       title: "Premium Concierge",
-      details: "premium@smartcarselite.co.in",
+      details: content.contact.email,
       description: "Personalized service coordination and inquiries",
       action: "Email Us"
     },
     {
       icon: MapPin,
       title: "Mumbai Service Center",
-      details: "Phoenix Mills Compound, Lower Parel, Mumbai - 400013, Maharashtra",
+      details: content.contact.address,
       description: "Visit our flagship luxury service center",
       action: "Get Directions"
     },
     {
       icon: Clock,
       title: "Service Hours (IST)",
-      details: "Mon-Sat: 9:00 AM - 8:00 PM, Sun: 10:00 AM - 6:00 PM",
+      details: content.contact.hours,
       description: "Extended hours for premium members",
       action: "Schedule Visit"
     }
@@ -76,12 +79,11 @@ const Contact = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="font-luxury text-4xl md:text-6xl font-bold text-primary mb-6">
-              Elite Customer
+              {content.contact.title}
               <span className="text-secondary block">Support</span>
             </h1>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              Experience personalized support from our dedicated concierge team. 
-              We're available 24/7 to ensure your luxury automotive needs are met with precision and care.
+              {content.contact.subtitle}
             </p>
           </div>
         </div>

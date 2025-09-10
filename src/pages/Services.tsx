@@ -5,58 +5,12 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Brain, Wrench, Palette, Phone, Shield, Clock } from "lucide-react";
+import { useWebsiteContent } from "@/lib/contentStore";
 
 const Services = () => {
-  const services = [
-    {
-      icon: Brain,
-      title: "AI Diagnostics",
-      description: "Advanced artificial intelligence systems that provide comprehensive vehicle analysis and predictive maintenance recommendations.",
-      features: ["Real-time system monitoring", "Predictive failure analysis", "Performance optimization", "Digital health reports"],
-      price: "From ₹24,999",
-      badge: "Popular"
-    },
-    {
-      icon: Wrench,
-      title: "Engine Rebuild",
-      description: "Master craftsmen rebuild your engine to factory specifications or beyond, using premium components and precision techniques.",
-      features: ["Complete engine overhaul", "Performance enhancement", "Warranty included", "Progress documentation"],
-      price: "From ₹7,49,999",
-      badge: "Premium"
-    },
-    {
-      icon: Palette,
-      title: "Smart Customization",
-      description: "Personalized vehicle modifications combining aesthetic excellence with advanced technology integration.",
-      features: ["Custom interior design", "Performance modifications", "Tech integration", "Exclusive materials"],
-      price: "From ₹2,09,999",
-      badge: "Exclusive"
-    },
-    {
-      icon: Phone,
-      title: "Emergency Assistance",
-      description: "24/7 elite roadside assistance and emergency services for luxury vehicles worldwide.",
-      features: ["24/7 availability", "Global coverage", "Luxury transport", "Priority response"],
-      price: "₹16,599/month",
-      badge: "24/7"
-    },
-    {
-      icon: Shield,
-      title: "Predictive Maintenance",
-      description: "AI-powered maintenance scheduling that prevents issues before they occur, maximizing vehicle longevity.",
-      features: ["Intelligent scheduling", "Parts pre-ordering", "Service reminders", "Warranty protection"],
-      price: "From ₹12,499/month",
-      badge: "Smart"
-    },
-    {
-      icon: Clock,
-      title: "Concierge Service",
-      description: "White-glove service including vehicle pickup, delivery, and complete care coordination.",
-      features: ["Vehicle pickup/delivery", "Service coordination", "Progress updates", "Detailed reporting"],
-      price: "Included",
-      badge: "Elite"
-    }
-  ];
+  const { content } = useWebsiteContent();
+
+  const serviceIcons = [Brain, Wrench, Palette, Phone, Shield, Clock];
 
   const addons = [
     "Interior Detailing - ₹24,999",
@@ -75,12 +29,11 @@ const Services = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="font-luxury text-4xl md:text-6xl font-bold text-primary mb-6">
-              Luxury Automotive
+              {content.services.title}
               <span className="text-secondary block">Services</span>
             </h1>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              Experience the perfect fusion of AI-driven diagnostics, master craftsmanship, 
-              and personalized service tailored to the world's most discerning automotive enthusiasts.
+              {content.services.subtitle}
             </p>
             <Link to="/booking">
               <Button variant="luxury" size="lg">Book Service Now</Button>
@@ -102,10 +55,10 @@ const Services = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => {
-              const IconComponent = service.icon;
+            {content.services.services.map((service, index) => {
+              const IconComponent = serviceIcons[index % serviceIcons.length];
               return (
-                <Card key={index} className="p-6 shadow-elegant hover:shadow-luxury transition-luxury bg-card-luxury group">
+                <Card key={service.id} className="p-6 shadow-elegant hover:shadow-luxury transition-luxury bg-card-luxury group">
                   <div className="relative mb-6">
                     <div className="w-12 h-12 bg-gradient-luxury rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-luxury">
                       <IconComponent className="w-6 h-6 text-primary" />
@@ -114,26 +67,24 @@ const Services = () => {
                       variant="secondary" 
                       className="absolute top-0 right-0 bg-secondary/10 text-secondary border-secondary/20"
                     >
-                      {service.badge}
+                      Popular
                     </Badge>
                   </div>
                   
-                  <h3 className="font-luxury text-xl font-semibold text-primary mb-3">{service.title}</h3>
+                  <h3 className="font-luxury text-xl font-semibold text-primary mb-3">{service.name}</h3>
                   <p className="text-muted-foreground mb-4 text-sm leading-relaxed">{service.description}</p>
                   
                   <div className="space-y-2 mb-6">
-                    {service.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center text-sm text-muted-foreground">
-                        <div className="w-1 h-1 bg-secondary rounded-full mr-3"></div>
-                        {feature}
-                      </div>
-                    ))}
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <div className="w-1 h-1 bg-secondary rounded-full mr-3"></div>
+                      Duration: {service.duration}
+                    </div>
                   </div>
                   
                   <div className="flex items-center justify-between pt-4 border-t border-accent-light">
                     <span className="text-lg font-semibold text-secondary">{service.price}</span>
                     <div className="flex flex-col sm:flex-row gap-2">
-                      <Link to={`/services/${service.title.toLowerCase().replace(/ /g, '-')}`} className="flex-1 sm:flex-none">
+                      <Link to={`/services/${service.id}`} className="flex-1 sm:flex-none">
                         <Button variant="ghost" size="sm" className="w-full sm:w-auto text-xs sm:text-sm">Details</Button>
                       </Link>
                       <Link to="/booking" className="flex-1 sm:flex-none">

@@ -2,8 +2,11 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { useWebsiteContent } from "@/lib/contentStore";
 
 const Footer = () => {
+  const { content } = useWebsiteContent();
+  
   return (
     <footer className="bg-primary text-primary-foreground">
       {/* Newsletter Section */}
@@ -39,11 +42,10 @@ const Footer = () => {
               <div className="w-8 h-8 bg-secondary rounded-md flex items-center justify-center">
                 <span className="text-primary font-bold text-lg">S</span>
               </div>
-              <span className="font-luxury text-xl font-semibold">Smart Cars Elite</span>
+              <span className="font-luxury text-xl font-semibold">{content.footer.companyName}</span>
             </div>
             <p className="text-primary-foreground/80 text-sm">
-              Redefining the future of luxury automotive care through AI diagnostics, 
-              precision engineering, and timeless craftsmanship.
+              {content.footer.description}
             </p>
             <div className="flex space-x-4">
               <Facebook className="w-5 h-5 text-primary-foreground/60 hover:text-secondary transition-luxury cursor-pointer" />
@@ -78,19 +80,13 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-luxury text-lg font-semibold">Services</h4>
             <div className="space-y-2">
-              {[
-                "AI Diagnostics",
-                "Engine Rebuild",
-                "Smart Customization",
-                "Emergency Assistance",
-                "Predictive Maintenance",
-              ].map((service) => (
+              {content.services.services.slice(0, 5).map((service) => (
                 <Link
-                  key={service}
+                  key={service.id}
                   to="/services"
                   className="block text-primary-foreground/80 hover:text-secondary transition-luxury text-sm"
                 >
-                  {service}
+                  {service.name}
                 </Link>
               ))}
             </div>
@@ -104,21 +100,21 @@ const Footer = () => {
                 <Phone className="w-4 h-4 text-secondary" />
                 <div>
                   <p className="text-sm text-primary-foreground/80">24/7 Helpline</p>
-                  <p className="text-sm font-medium">+91 98765-43210</p>
+                  <p className="text-sm font-medium">{content.footer.phone}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-secondary" />
                 <div>
                   <p className="text-sm text-primary-foreground/80">Email</p>
-                  <p className="text-sm font-medium">premium@smartcarselite.co.in</p>
+                  <p className="text-sm font-medium">{content.footer.email}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-4 h-4 text-secondary" />
                 <div>
                   <p className="text-sm text-primary-foreground/80">Service Center</p>
-                  <p className="text-sm font-medium">Lower Parel, Mumbai</p>
+                  <p className="text-sm font-medium">{content.footer.address}</p>
                 </div>
               </div>
             </div>
@@ -129,7 +125,7 @@ const Footer = () => {
         <div className="border-t border-primary-foreground/20 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-primary-foreground/60 text-sm">
-              © 2024 Smart Cars Elite. All rights reserved.
+              © 2024 {content.footer.companyName}. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <Link to="#" className="text-primary-foreground/60 hover:text-secondary transition-luxury text-sm">
