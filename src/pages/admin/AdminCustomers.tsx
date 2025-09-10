@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Users, Search, Plus, Mail, Phone, Calendar, Activity } from "lucide-react";
 import { useAdminCustomers } from "@/lib/admin-hooks";
+import CarLoadingAnimation from "@/components/CarLoadingAnimation";
 
 const AdminCustomers = () => {
   const { data: customers = [], isLoading, error } = useAdminCustomers();
@@ -41,7 +42,7 @@ const AdminCustomers = () => {
           <div className="space-y-4">
             {isLoading ? (
               <div className="text-center py-12">
-                <Activity className="w-12 h-12 text-accent mx-auto mb-4 animate-spin" />
+                <CarLoadingAnimation size="lg" className="mx-auto mb-4" />
                 <p className="text-lg text-muted-foreground mb-2">Loading customers...</p>
                 <p className="text-sm text-muted-foreground">Please wait while we fetch customer data</p>
               </div>

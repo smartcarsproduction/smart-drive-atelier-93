@@ -15,6 +15,7 @@ import {
   FileText
 } from "lucide-react";
 import { useAdminStats, useRecentBookings } from "@/lib/admin-hooks";
+import CarLoadingAnimation from "@/components/CarLoadingAnimation";
 
 const AdminDashboardHome = () => {
   const { data: stats = [], isLoading: statsLoading } = useAdminStats();
@@ -70,7 +71,7 @@ const AdminDashboardHome = () => {
           })
         ) : statsLoading ? (
           <Card className="col-span-full p-8 text-center">
-            <Activity className="w-12 h-12 text-accent mx-auto mb-4 animate-spin" />
+            <CarLoadingAnimation size="lg" className="mx-auto mb-4" />
             <p className="text-lg text-muted-foreground mb-2">Loading statistics...</p>
             <p className="text-sm text-muted-foreground">Please wait while we fetch your data</p>
           </Card>
@@ -113,7 +114,7 @@ const AdminDashboardHome = () => {
               ))
             ) : bookingsLoading ? (
               <div className="text-center py-8">
-                <Activity className="w-8 h-8 text-accent mx-auto mb-4 animate-spin" />
+                <CarLoadingAnimation size="md" className="mx-auto mb-4" />
                 <p className="text-muted-foreground">Loading recent bookings...</p>
               </div>
             ) : (
