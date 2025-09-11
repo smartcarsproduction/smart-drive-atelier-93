@@ -27,7 +27,17 @@ const Login = () => {
     try {
       await loginWithEmail(formData.email, formData.password);
       toast.success("Login successful! Welcome to Smart Cars Elite.");
-      navigate("/dashboard");
+      
+      // Get user data from auth context to check role
+      // We need to wait a moment for the user context to update
+      setTimeout(() => {
+        const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+        if (userData.role === 'admin') {
+          navigate("/admin");
+        } else {
+          navigate("/dashboard");
+        }
+      }, 100);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Login failed. Please try again.");
     } finally {
