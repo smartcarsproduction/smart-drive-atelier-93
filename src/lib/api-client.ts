@@ -286,6 +286,7 @@ export const bookingApi = {
 // Content API functions
 export const contentApi = {
   getAllContent: () => apiRequest<any[]>('/api/content'),
+  getPublicContent: () => apiRequest<any[]>('/api/content/public'),
   getContentByCategory: (category: string) => apiRequest<any[]>(`/api/content/category/${category}`),
   getContentByKey: (key: string) => apiRequest<{ key: string; value: string }>(`/api/content/key/${key}`),
   updateContent: (key: string, value: string, updatedBy?: string) => apiRequest<any>(`/api/content/key/${key}`, {

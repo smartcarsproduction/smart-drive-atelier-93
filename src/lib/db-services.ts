@@ -323,6 +323,12 @@ export class ContentService {
     return await db.select().from(content)
       .orderBy(asc(content.category), asc(content.key));
   }
+
+  static async getPublic(): Promise<Content[]> {
+    return await db.select().from(content)
+      .where(eq(content.isPublic, true))
+      .orderBy(asc(content.category), asc(content.key));
+  }
 }
 
 // Notification Services

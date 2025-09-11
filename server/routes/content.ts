@@ -30,6 +30,17 @@ router.get('/', requireAdmin, async (req, res) => {
   }
 });
 
+// Get public content (no authentication required)
+router.get('/public', async (req, res) => {
+  try {
+    const content = await ContentService.getPublic();
+    res.json(content);
+  } catch (error) {
+    console.error('Error fetching public content:', error);
+    res.status(500).json({ error: 'Failed to fetch public content' });
+  }
+});
+
 // Get content by category
 router.get('/category/:category', async (req, res) => {
   try {

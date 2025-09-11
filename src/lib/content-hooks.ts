@@ -8,11 +8,19 @@ export const contentKeys = {
   key: (key: string) => [...contentKeys.all, 'key', key] as const,
 };
 
-// Hook to fetch all content
+// Hook to fetch all content (for admin)
 export const useAllContent = () => {
   return useQuery({
     queryKey: contentKeys.all,
     queryFn: contentApi.getAllContent,
+  });
+};
+
+// Hook to fetch public content (for public pages)
+export const usePublicContent = () => {
+  return useQuery({
+    queryKey: [...contentKeys.all, 'public'],
+    queryFn: contentApi.getPublicContent,
   });
 };
 
@@ -107,7 +115,7 @@ const defaultContent: WebsiteContent = {
 
 // Backward compatibility hook for existing components
 export const useWebsiteContent = () => {
-  const { data: allContent = [], isLoading, error } = useAllContent();
+  const { data: allContent = [], isLoading, error } = usePublicContent();
   const updateContentMutation = useUpdateContent();
 
   // Convert backend content array to structured object
