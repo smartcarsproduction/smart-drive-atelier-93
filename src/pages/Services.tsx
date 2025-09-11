@@ -3,17 +3,20 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from "react-router-dom";
-import { Brain, Wrench, Palette, Phone, Shield, Clock, Activity } from "lucide-react";
+import { Brain, Wrench, Palette, Phone, Shield, Clock, Activity, AlertTriangle, Loader2 } from "lucide-react";
 import { useWebsiteContent } from "@/lib/content-hooks";
+import { useServices, formatPrice, formatDuration, getLuxuryLevelVariant, capitalizeLuxuryLevel } from "@/lib/service-hooks";
 
 const Services = () => {
-  const { content, isLoading } = useWebsiteContent();
+  const { content, isLoading: contentLoading } = useWebsiteContent();
+  const { data: services = [], isLoading: servicesLoading, error: servicesError } = useServices();
 
   const serviceIcons = [Brain, Wrench, Palette, Phone, Shield, Clock];
 
-  // For now, use empty arrays until content structure is fixed
-  const services: any[] = [];
+  // Get category-specific services for addons (can be expanded later)
   const addons: any[] = [];
 
   return (
@@ -50,48 +53,105 @@ const Services = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => {
-              const IconComponent = serviceIcons[index % serviceIcons.length];
-              return (
-                <Card key={service.id} className="p-6 shadow-elegant hover:shadow-luxury transition-luxury bg-card-luxury group">
-                  <div className="relative mb-6">
-                    <div className="w-12 h-12 bg-gradient-luxury rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-luxury">
-                      <IconComponent className="w-6 h-6 text-primary" />
+          {/* Loading State */}
+          {servicesLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, index) => (
+                <Card key={index} className="p-6 shadow-elegant bg-card-luxury">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-start">
+                      <Skeleton className="h-12 w-12 rounded-xl" />
+                      <Skeleton className="h-6 w-20" />
                     </div>
-                    <Badge 
-                      variant="secondary" 
-                      className="absolute top-0 right-0 bg-secondary/10 text-secondary border-secondary/20"
-                    >
-                      Popular
-                    </Badge>
-                  </div>
-                  
-                  <h3 className="font-luxury text-xl font-semibold text-primary mb-3">{service.name}</h3>
-                  <p className="text-muted-foreground mb-4 text-sm leading-relaxed">{service.description}</p>
-                  
-                  <div className="space-y-2 mb-6">
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <div className="w-1 h-1 bg-secondary rounded-full mr-3"></div>
-                      Duration: {service.duration}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between pt-4 border-t border-accent-light">
-                    <span className="text-lg font-semibold text-secondary">{service.price}</span>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Link to={`/services/${service.id}`} className="flex-1 sm:flex-none">
-                        <Button variant="ghost" size="sm" className="w-full sm:w-auto text-xs sm:text-sm">Details</Button>
-                      </Link>
-                      <Link to="/booking" className="flex-1 sm:flex-none">
-                        <Button variant="elegant" size="sm" className="w-full sm:w-auto text-xs sm:text-sm">Book Now</Button>
-                      </Link>
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <div className="flex justify-between items-center pt-4">
+                      <Skeleton className="h-6 w-20" />
+                      <div className="flex gap-2">
+                        <Skeleton className="h-8 w-16" />
+                        <Skeleton className="h-8 w-20" />
+                      </div>
                     </div>
                   </div>
                 </Card>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
+
+          {/* Error State */}
+          {servicesError && (
+            <Alert className="max-w-2xl mx-auto">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription className="ml-2">
+                Failed to load services. Please try refreshing the page.
+                {servicesError.message && (
+                  <span className="block text-xs mt-1 text-muted-foreground">{servicesError.message}</span>
+                )}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Services Grid */}
+          {!servicesLoading && !servicesError && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {services.length === 0 ? (
+                <div className="col-span-full text-center py-12">
+                  <Activity className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-primary mb-2">No Services Available</h3>
+                  <p className="text-muted-foreground">Please check back later for our luxury automotive services.</p>
+                </div>
+              ) : (
+                services.map((service, index) => {
+                  const IconComponent = serviceIcons[index % serviceIcons.length];
+                  return (
+                    <Card key={service.id} className="p-6 shadow-elegant hover:shadow-luxury transition-luxury bg-card-luxury group" data-testid={`card-service-${service.id}`}>
+                      <div className="relative mb-6">
+                        <div className="w-12 h-12 bg-gradient-luxury rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-luxury">
+                          <IconComponent className="w-6 h-6 text-primary" />
+                        </div>
+                        <Badge 
+                          variant={getLuxuryLevelVariant(service.luxuryLevel || 'standard')}
+                          className="absolute top-0 right-0"
+                          data-testid={`badge-luxury-${service.id}`}
+                        >
+                          {capitalizeLuxuryLevel(service.luxuryLevel || 'standard')}
+                        </Badge>
+                      </div>
+                      
+                      <h3 className="font-luxury text-xl font-semibold text-primary mb-3" data-testid={`text-service-name-${service.id}`}>{service.name}</h3>
+                      <p className="text-muted-foreground mb-4 text-sm leading-relaxed" data-testid={`text-service-description-${service.id}`}>{service.description || 'Premium luxury service for your vehicle'}</p>
+                      
+                      <div className="space-y-2 mb-6">
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Clock className="w-3 h-3 mr-2" />
+                          Duration: <span data-testid={`text-duration-${service.id}`}>{formatDuration(service.estimatedDuration)}</span>
+                        </div>
+                        {service.requiresPickup && (
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <div className="w-1 h-1 bg-secondary rounded-full mr-3"></div>
+                            Includes pickup & delivery
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-4 border-t border-accent-light">
+                        <span className="text-lg font-semibold text-secondary" data-testid={`text-price-${service.id}`}>{formatPrice(service.price)}</span>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <Link to={`/services/${service.id}`} className="flex-1 sm:flex-none">
+                            <Button variant="ghost" size="sm" className="w-full sm:w-auto text-xs sm:text-sm" data-testid={`button-details-${service.id}`}>Details</Button>
+                          </Link>
+                          <Link to="/booking" className="flex-1 sm:flex-none">
+                            <Button variant="elegant" size="sm" className="w-full sm:w-auto text-xs sm:text-sm" data-testid={`button-book-${service.id}`}>Book Now</Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })
+              )}
+            </div>
+          )}
         </div>
       </section>
 
