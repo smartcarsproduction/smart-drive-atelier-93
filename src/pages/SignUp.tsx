@@ -109,6 +109,7 @@ const SignUp = () => {
                   value={formData.firstName}
                   onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                   className="bg-background border-accent-light focus:border-secondary"
+                  data-testid="input-first-name"
                   required
                 />
               </div>
@@ -120,6 +121,7 @@ const SignUp = () => {
                   value={formData.lastName}
                   onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                   className="bg-background border-accent-light focus:border-secondary"
+                  data-testid="input-last-name"
                   required
                 />
               </div>
@@ -134,6 +136,7 @@ const SignUp = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="bg-background border-accent-light focus:border-secondary"
+                data-testid="input-email"
                 required
               />
             </div>
@@ -147,6 +150,7 @@ const SignUp = () => {
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="bg-background border-accent-light focus:border-secondary"
+                data-testid="input-phone"
                 required
               />
             </div>
@@ -161,6 +165,7 @@ const SignUp = () => {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="bg-background border-accent-light focus:border-secondary pr-10"
+                  data-testid="input-password"
                   required
                 />
                 <Button
@@ -216,6 +221,7 @@ const SignUp = () => {
                   "bg-background border-accent-light focus:border-secondary",
                   formData.confirmPassword && (passwordMatch ? "border-green-600" : "border-destructive")
                 )}
+                data-testid="input-confirm-password"
                 required
               />
               {formData.confirmPassword && (
@@ -401,6 +407,7 @@ const SignUp = () => {
               className="flex-1"
               onClick={handleNext}
               disabled={currentStep === 3 && !formData.terms}
+              data-testid="button-next"
             >
               {currentStep === 3 ? "Create Account" : "Next"}
             </Button>
@@ -420,7 +427,7 @@ const SignUp = () => {
               <div className="mt-6 text-center">
                 <p className="text-sm text-muted-foreground">
                   Already have an account?{" "}
-                  <Link to="/login" className="text-secondary hover:underline font-medium">
+                  <Link to="/login" className="text-secondary hover:underline font-medium" data-testid="link-login">
                     Sign In
                   </Link>
                 </p>

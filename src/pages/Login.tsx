@@ -70,6 +70,7 @@ const Login = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="bg-background border-accent-light focus:border-secondary"
+                data-testid="input-email"
                 required
               />
             </div>
@@ -84,6 +85,7 @@ const Login = () => {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="bg-background border-accent-light focus:border-secondary pr-10"
+                  data-testid="input-password"
                   required
                 />
                 <Button
@@ -92,6 +94,7 @@ const Login = () => {
                   size="icon"
                   className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
                   onClick={() => setShowPassword(!showPassword)}
+                  data-testid="button-toggle-password"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </Button>
@@ -114,7 +117,7 @@ const Login = () => {
               </Link>
             </div>
 
-            <Button type="submit" variant="luxury" className="w-full" disabled={isLoading}>
+            <Button type="submit" variant="luxury" className="w-full" disabled={isLoading} data-testid="button-login">
               {isLoading ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>
@@ -131,7 +134,7 @@ const Login = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-secondary hover:underline font-medium">
+              <Link to="/signup" className="text-secondary hover:underline font-medium" data-testid="link-signup">
                 Create Elite Account
               </Link>
             </p>

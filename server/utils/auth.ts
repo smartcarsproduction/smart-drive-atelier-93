@@ -95,7 +95,7 @@ export class TokenUtils {
         expiresIn: JWT_EXPIRES_IN,
         issuer: 'smart-cars-elite',
         audience: 'smart-cars-users',
-      }
+      } as jwt.SignOptions
     );
   }
 
@@ -114,7 +114,7 @@ export class TokenUtils {
         expiresIn: '7d',
         issuer: 'smart-cars-elite',
         audience: 'smart-cars-users',
-      }
+      } as jwt.SignOptions
     );
   }
 
@@ -172,7 +172,7 @@ export class AuthResponse {
     email: string;
     name: string;
     role: string;
-    picture?: string;
+    picture?: string | null;
   }) {
     const tokens = TokenUtils.generateTokenPair(user);
     
@@ -182,7 +182,7 @@ export class AuthResponse {
         email: user.email,
         name: user.name,
         role: user.role,
-        picture: user.picture,
+        picture: user.picture || undefined,
       },
       ...tokens,
     };

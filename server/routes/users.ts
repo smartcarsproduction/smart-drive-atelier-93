@@ -53,7 +53,7 @@ router.post('/register', async (req, res) => {
     const userData = registerSchema.parse(req.body);
     
     // Check rate limiting
-    const rateLimit = SecurityUtils.checkRateLimit(req.ip, 5, 15 * 60 * 1000);
+    const rateLimit = SecurityUtils.checkRateLimit(req.ip || 'unknown', 5, 15 * 60 * 1000);
     if (!rateLimit.allowed) {
       return res.status(429).json({
         error: 'Too many registration attempts',
@@ -98,7 +98,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = loginSchema.parse(req.body);
     
     // Check rate limiting
-    const rateLimit = SecurityUtils.checkRateLimit(`login_${req.ip}_${email}`, 5, 15 * 60 * 1000);
+    const rateLimit = SecurityUtils.checkRateLimit(`login_${req.ip || 'unknown'}_${email}`, 5, 15 * 60 * 1000);
     if (!rateLimit.allowed) {
       return res.status(429).json({
         error: 'Too many login attempts',
@@ -113,7 +113,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Clear rate limit on successful login
-    SecurityUtils.clearRateLimit(`login_${req.ip}_${email}`);
+    SecurityUtils.clearRateLimit(`login_${req.ip || 'unknown'}_${email}`);
     
     const sanitizedUser = UserService.sanitizeUser(user);
     const authResponse = AuthResponse.success(sanitizedUser);
