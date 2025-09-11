@@ -6,6 +6,7 @@ import { queryClient } from "@/lib/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { RoleBasedRedirect } from "@/components/RoleBasedRedirect";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Services from "./pages/Services";
@@ -46,7 +47,9 @@ const App = () => (
             } />
             <Route path="/dashboard" element={
               <ProtectedRoute>
-                <Dashboard />
+                <RoleBasedRedirect>
+                  <Dashboard />
+                </RoleBasedRedirect>
               </ProtectedRoute>
             } />
             <Route path="/vehicles" element={

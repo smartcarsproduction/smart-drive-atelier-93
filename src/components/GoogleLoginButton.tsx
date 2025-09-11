@@ -47,16 +47,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
       try {
         await login(response.credential);
         toast.success('Successfully signed in with Google!');
-        
-        // Check user role and redirect accordingly
-        setTimeout(() => {
-          const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
-          if (userData.role === 'admin') {
-            navigate("/admin");
-          } else {
-            navigate(redirectPath);
-          }
-        }, 100);
+        navigate(redirectPath); // Let the ProtectedRoute handle role-based redirection
       } catch (error) {
         toast.error('Failed to sign in with Google. Please try again.');
         console.error('Google sign-in error:', error);
