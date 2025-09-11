@@ -564,7 +564,7 @@ const VehicleManagement = () => {
                       <div className="space-y-2">
                         {upcomingBookings?.slice(0, 3).map((booking) => (
                           <div key={booking.id} data-testid={`booking-item-${booking.id}`} className="text-sm border-l-2 border-primary pl-3">
-                            <div className="font-medium">{booking.serviceName || 'Service'}</div>
+                            <div className="font-medium">{'Service'}</div>
                             <div className="text-muted-foreground">
                               {new Date(booking.scheduledDate).toLocaleDateString()} • {booking.status}
                             </div>
@@ -594,7 +594,7 @@ const VehicleManagement = () => {
                       <div className="space-y-3">
                         {serviceHistory?.slice(0, 5).map((record) => (
                           <div key={record.id} data-testid={`service-history-item-${record.id}`} className="border-l-2 border-green-500 pl-3">
-                            <div className="text-sm font-medium">{record.serviceName || 'Service'}</div>
+                            <div className="text-sm font-medium">{'Service'}</div>
                             <div className="text-xs text-muted-foreground">
                               {new Date(record.completedDate).toLocaleDateString()}
                               {record.totalPrice && ` • $${record.totalPrice}`}
