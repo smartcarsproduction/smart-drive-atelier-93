@@ -1,4 +1,4 @@
-import { db } from './database';
+import { db } from '../../server/lib/database';
 import { users, vehicles, services, bookings, serviceHistory, content, notifications } from './schema';
 import { eq, and, desc, asc } from 'drizzle-orm';
 import type { 
