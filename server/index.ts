@@ -9,7 +9,7 @@ import { contentRoutes } from './routes/content';
 import { notificationRoutes } from './routes/notifications';
 import { serviceHistoryRoutes } from './routes/serviceHistory';
 import { analyticsRoutes } from './routes/analytics';
-// import { timeSlotsRoutes } from './routes/timeSlots';
+import { timeSlotsRoutes } from './routes/timeSlots';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -28,7 +28,7 @@ app.use('/api/content', contentRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/service-history', serviceHistoryRoutes);
 app.use('/api/analytics', analyticsRoutes);
-// app.use('/api/time-slots', timeSlotsRoutes);
+app.use('/api/time-slots', timeSlotsRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

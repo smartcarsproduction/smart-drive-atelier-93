@@ -316,5 +316,31 @@ export const serviceHistoryApi = {
   }),
 };
 
+// Time Slots API functions
+export const timeSlotsApi = {
+  getAvailableSlots: (date: string) => apiRequest<any[]>(`/api/time-slots/available/${date}`),
+  getSlotsInRange: (startDate: string, endDate: string) => 
+    apiRequest<any[]>(`/api/time-slots/range?startDate=${startDate}&endDate=${endDate}`),
+  bookSlot: (timeSlotId: string, bookingId: string) => apiRequest<{success: boolean; message: string}>('/api/time-slots/book', {
+    method: 'POST',
+    body: JSON.stringify({ timeSlotId, bookingId }),
+  }),
+  createTimeSlot: (slotData: any) => apiRequest<any>('/api/time-slots', {
+    method: 'POST',
+    body: JSON.stringify(slotData),
+  }),
+  generateSlots: (generationData: {
+    startDate: string;
+    endDate: string;
+    startTime: string;
+    endTime: string;
+    slotDuration: number;
+    maxCapacity?: number;
+  }) => apiRequest<{message: string; slots: any[]}>('/api/time-slots/generate', {
+    method: 'POST',
+    body: JSON.stringify(generationData),
+  }),
+};
+
 // Export TokenManager for use in auth context
 export { ApiError, TokenManager };

@@ -402,3 +402,169 @@ export class ServiceHistoryService {
       .orderBy(desc(serviceHistory.completedDate));
   }
 }
+
+// Time Slots Services
+export class TimeSlotsService {
+  static async create(slotData: Omit<NewTimeSlot, 'id' | 'createdAt' | 'updatedAt'>): Promise<TimeSlot> {
+    const [timeSlot] = await db.insert(timeSlots).values(slotData).returning();
+    return timeSlot;
+  }
+
+  static async getAvailableSlots(date: Date): Promise<TimeSlot[]> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return await db.select().from(timeSlots)
+      .where(
+        and(
+          gte(timeSlots.date, startOfDay),
+          lte(timeSlots.date, endOfDay),
+          eq(timeSlots.isAvailable, true),
+          lt(timeSlots.currentBookings, timeSlots.maxCapacity)
+        )
+      )
+      .orderBy(asc(timeSlots.startTime));
+  }
+
+  static async getSlotsInRange(startDate: Date, endDate: Date): Promise<TimeSlot[]> {
+    return await db.select().from(timeSlots)
+      .where(
+        and(
+          gte(timeSlots.date, startDate),
+          lte(timeSlots.date, endDate)
+        )
+      )
+      .orderBy(asc(timeSlots.date), asc(timeSlots.startTime));
+  }
+
+  static async bookSlot(timeSlotId: string, bookingId: string): Promise<boolean> {
+    try {
+      // Start a transaction to prevent double booking
+      const [slot] = await db.select().from(timeSlots)
+        .where(eq(timeSlots.id, timeSlotId));
+
+      if (!slot) {
+        throw new Error('Time slot not found');
+      }
+
+      // Check if slot is still available (double-booking prevention)
+      if (!slot.isAvailable || slot.currentBookings >= slot.maxCapacity) {
+        return false;
+      }
+
+      // Update slot with booking
+      const newCurrentBookings = slot.currentBookings + 1;
+      const shouldMarkUnavailable = newCurrentBookings >= slot.maxCapacity;
+
+      await db.update(timeSlots)
+        .set({
+          bookedBy: bookingId,
+          currentBookings: newCurrentBookings,
+          isAvailable: !shouldMarkUnavailable,
+          updatedAt: new Date()
+        })
+        .where(eq(timeSlots.id, timeSlotId));
+
+      return true;
+    } catch (error) {
+      console.error('Error booking slot:', error);
+      return false;
+    }
+  }
+
+  static async releaseSlot(timeSlotId: string): Promise<boolean> {
+    try {
+      const [slot] = await db.select().from(timeSlots)
+        .where(eq(timeSlots.id, timeSlotId));
+
+      if (!slot) {
+        return false;
+      }
+
+      const newCurrentBookings = Math.max(0, slot.currentBookings - 1);
+
+      await db.update(timeSlots)
+        .set({
+          bookedBy: null,
+          currentBookings: newCurrentBookings,
+          isAvailable: true,
+          updatedAt: new Date()
+        })
+        .where(eq(timeSlots.id, timeSlotId));
+
+      return true;
+    } catch (error) {
+      console.error('Error releasing slot:', error);
+      return false;
+    }
+  }
+
+  static async generateSlots(options: {
+    startDate: Date;
+    endDate: Date;
+    startTime: string;
+    endTime: string;
+    slotDuration: number; // in minutes
+    maxCapacity?: number;
+  }): Promise<TimeSlot[]> {
+    const { startDate, endDate, startTime, endTime, slotDuration, maxCapacity = 1 } = options;
+    const slots: TimeSlot[] = [];
+
+    // Parse start and end times
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    // Generate slots for each day in the range
+    const currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      // Generate time slots for this day
+      let currentSlotStart = new Date(currentDate);
+      currentSlotStart.setHours(startHour, startMinute, 0, 0);
+      
+      const dayEnd = new Date(currentDate);
+      dayEnd.setHours(endHour, endMinute, 0, 0);
+
+      while (currentSlotStart < dayEnd) {
+        const slotEnd = new Date(currentSlotStart);
+        slotEnd.setMinutes(slotEnd.getMinutes() + slotDuration);
+
+        if (slotEnd <= dayEnd) {
+          const slotData: Omit<NewTimeSlot, 'id' | 'createdAt' | 'updatedAt'> = {
+            date: new Date(currentSlotStart),
+            startTime: currentSlotStart.toTimeString().substring(0, 5),
+            endTime: slotEnd.toTimeString().substring(0, 5),
+            maxCapacity,
+            currentBookings: 0,
+            isAvailable: true,
+          };
+
+          const createdSlot = await this.create(slotData);
+          slots.push(createdSlot);
+        }
+
+        currentSlotStart = new Date(slotEnd);
+      }
+
+      // Move to next day
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return slots;
+  }
+
+  static async findById(id: string): Promise<TimeSlot | null> {
+    const [slot] = await db.select().from(timeSlots).where(eq(timeSlots.id, id));
+    return slot || null;
+  }
+
+  static async getSlotsByBooking(bookingId: string): Promise<TimeSlot[]> {
+    return await db.select().from(timeSlots)
+      .where(eq(timeSlots.bookedBy, bookingId));
+  }
+
+  static async deleteSlot(id: string): Promise<void> {
+    await db.delete(timeSlots).where(eq(timeSlots.id, id));
+  }
+}
