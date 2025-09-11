@@ -1,3 +1,4 @@
+import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { contentApi } from './api-client';
 
@@ -184,5 +185,3 @@ export const useWebsiteContent = () => {
   };
 };
 
-// Import React for useMemo
-import React from 'react';
