@@ -13,6 +13,13 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       clientPort: 443,
     },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

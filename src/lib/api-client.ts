@@ -12,14 +12,9 @@ const getApiBaseUrl = () => {
     return import.meta.env.DEV ? 'http://localhost:3001' : '';
   }
 
-  // Browser environment: use environment-aware URL
-  if (import.meta.env.DEV) {
-    // Development: use port 3001 for backend
-    return `${window.location.protocol}//${window.location.hostname}:3001`;
-  } else {
-    // Production: use same-origin (no explicit port)
-    return window.location.origin;
-  }
+  // Browser environment: use same origin for Replit compatibility
+  // In Replit, both frontend and backend are served through the same port
+  return window.location.origin;
 };
 
 const API_BASE_URL = getApiBaseUrl();

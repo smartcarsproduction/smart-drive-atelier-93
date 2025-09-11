@@ -9,9 +9,12 @@ try {
   if (typeof process !== 'undefined' && process.env.DATABASE_URL) {
     connection = neon(process.env.DATABASE_URL);
     db = drizzle(connection);
+    console.log('Database connection established successfully');
+  } else {
+    console.error('DATABASE_URL not available');
   }
 } catch (error) {
-  console.warn('Database connection not available:', error);
+  console.error('Database connection failed:', error);
 }
 
 export { db, connection };
