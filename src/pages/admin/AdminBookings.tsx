@@ -4,9 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Calendar, Search, Plus, Clock, Car, User, Activity, AlertTriangle } from "lucide-react";
 import { useAdminBookings } from "@/lib/admin-hooks";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminBookings = () => {
   const { data: bookings = [], isLoading, error } = useAdminBookings();
+  const { toast } = useToast();
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -15,7 +17,7 @@ const AdminBookings = () => {
           <h1 className="font-luxury text-2xl sm:text-3xl font-bold text-primary">Booking Management</h1>
           <p className="text-muted-foreground text-sm sm:text-base">Manage service appointments and scheduling.</p>
         </div>
-        <Button variant="luxury" size="sm" className="w-full sm:w-auto">
+        <Button variant="luxury" size="sm" className="w-full sm:w-auto" onClick={() => toast({ title: "New Booking", description: "Booking creation form coming soon!" })}>
           <Plus className="w-4 h-4 mr-2" />
           New Booking
         </Button>
@@ -28,9 +30,9 @@ const AdminBookings = () => {
             <Input placeholder="Search bookings..." className="pl-10" />
           </div>
           <div className="flex flex-row sm:flex-row gap-2 sm:gap-3">
-            <Button variant="outline" size="sm" className="flex-1 sm:flex-none">Today</Button>
-            <Button variant="outline" size="sm" className="flex-1 sm:flex-none">This Week</Button>
-            <Button variant="outline" size="sm" className="flex-1 sm:flex-none hidden sm:inline-flex">Calendar View</Button>
+            <Button variant="outline" size="sm" className="flex-1 sm:flex-none" onClick={() => toast({ title: "Filter Today", description: "Today's bookings filter coming soon!" })}>Today</Button>
+            <Button variant="outline" size="sm" className="flex-1 sm:flex-none" onClick={() => toast({ title: "Filter This Week", description: "Weekly bookings filter coming soon!" })}>This Week</Button>
+            <Button variant="outline" size="sm" className="flex-1 sm:flex-none hidden sm:inline-flex" onClick={() => toast({ title: "Calendar View", description: "Calendar interface coming soon!" })}>Calendar View</Button>
           </div>
         </div>
       </Card>
@@ -88,7 +90,7 @@ const AdminBookings = () => {
                       >
                         {booking.status}
                       </Badge>
-                      <Button variant="ghost" size="sm" className="text-xs sm:text-sm">Manage</Button>
+                      <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={() => toast({ title: "Manage Booking", description: "Booking management tools coming soon!" })}>Manage</Button>
                     </div>
                   </div>
                 </div>
@@ -98,7 +100,7 @@ const AdminBookings = () => {
                 <Calendar className="w-16 h-16 text-accent mx-auto mb-4" />
                 <p className="text-lg text-muted-foreground mb-2">No bookings found</p>
                 <p className="text-sm text-muted-foreground mb-6">Service appointments will appear here when customers book</p>
-                <Button variant="luxury">
+                <Button variant="luxury" onClick={() => toast({ title: "Create New Booking", description: "Booking creation form coming soon!" })}>
                   <Plus className="w-4 h-4 mr-2" />
                   Create New Booking
                 </Button>

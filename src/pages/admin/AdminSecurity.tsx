@@ -2,8 +2,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Shield, AlertTriangle, Lock, Eye, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminSecurity = () => {
+  const { toast } = useToast();
   const threats: Array<{
     id: number;
     type: string;
@@ -20,7 +22,7 @@ const AdminSecurity = () => {
           <h1 className="font-luxury text-3xl font-bold text-primary">Security Center</h1>
           <p className="text-muted-foreground">Monitor security threats and system protection.</p>
         </div>
-        <Button variant="luxury">
+        <Button variant="luxury" onClick={() => toast({ title: "Security Scan", description: "Security scanning functionality coming soon!" })}>
           <Shield className="w-4 h-4 mr-2" />
           Run Security Scan
         </Button>

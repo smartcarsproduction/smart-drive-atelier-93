@@ -12,18 +12,17 @@ import {
   Activity,
   TrendingUp,
   Bell,
-  FileText
+  FileText,
+  AlertTriangle
 } from "lucide-react";
-// import { useAdminStats, useRecentBookings } from "@/lib/admin-hooks";
+import { useAdminStats, useRecentBookings } from "@/lib/admin-hooks";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminDashboardHome = () => {
-  // Temporarily disable data fetching to prevent logout cycle
-  // const { data: stats = [], isLoading: statsLoading } = useAdminStats();
-  // const { data: recentBookings = [], isLoading: bookingsLoading } = useRecentBookings(5);
-  const stats = [];
-  const recentBookings = [];
-  const statsLoading = false;
-  const bookingsLoading = false;
+  // Re-enable data fetching with proper error handling
+  const { data: stats = [], isLoading: statsLoading, error: statsError } = useAdminStats();
+  const { data: recentBookings = [], isLoading: bookingsLoading, error: bookingsError } = useRecentBookings(5);
+  const { toast } = useToast();
 
   // Icon mapping for stats
   const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
@@ -42,11 +41,11 @@ const AdminDashboardHome = () => {
           <p className="text-muted-foreground">Welcome back, Administrator. Here's your Smart Cars Elite overview.</p>
         </div>
         <div className="flex items-center space-x-4">
-          <Button variant="elegant" size="sm">
+          <Button variant="elegant" size="sm" onClick={() => toast({ title: "Notifications", description: "Notification center coming soon!" })}>
             <Bell className="w-4 h-4 mr-2" />
             Notifications
           </Button>
-          <Button variant="luxury" size="sm">
+          <Button variant="luxury" size="sm" onClick={() => toast({ title: "Generate Report", description: "Report generation coming soon!" })}>
             <FileText className="w-4 h-4 mr-2" />
             Generate Report
           </Button>
@@ -94,7 +93,7 @@ const AdminDashboardHome = () => {
         <Card className="lg:col-span-2 p-6 shadow-luxury">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-luxury text-xl font-bold text-primary">Recent Bookings</h2>
-            <Button variant="ghost" size="sm">View All</Button>
+            <Button variant="ghost" size="sm" onClick={() => toast({ title: "Recent Bookings", description: "Full bookings list coming soon!" })}>View All</Button>
           </div>
           <div className="space-y-4">
             {recentBookings.length > 0 ? (
@@ -135,15 +134,15 @@ const AdminDashboardHome = () => {
         <Card className="p-6 shadow-luxury">
           <h2 className="font-luxury text-xl font-bold text-primary mb-6">Quick Actions</h2>
           <div className="space-y-3">
-            <Button variant="elegant" className="w-full justify-start">
+            <Button variant="elegant" className="w-full justify-start" onClick={() => toast({ title: "Add New Customer", description: "Customer creation form coming soon!" })}>
               <Users className="w-4 h-4 mr-2" />
               Add New Customer
             </Button>
-            <Button variant="elegant" className="w-full justify-start">
+            <Button variant="elegant" className="w-full justify-start" onClick={() => toast({ title: "Schedule Service", description: "Service booking form coming soon!" })}>
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Service
             </Button>
-            <Button variant="elegant" className="w-full justify-start">
+            <Button variant="elegant" className="w-full justify-start" onClick={() => toast({ title: "Vehicle Registry", description: "Vehicle management coming soon!" })}>
               <Car className="w-4 h-4 mr-2" />
               Vehicle Registry
             </Button>

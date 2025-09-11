@@ -2,11 +2,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Users, Search, Plus, Mail, Phone, Calendar, Activity } from "lucide-react";
+import { Users, Search, Plus, Mail, Phone, Calendar, Activity, AlertTriangle } from "lucide-react";
 import { useAdminCustomers } from "@/lib/admin-hooks";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminCustomers = () => {
   const { data: customers = [], isLoading, error } = useAdminCustomers();
+  const { toast } = useToast();
 
   return (
     <div className="space-y-6">
@@ -16,7 +18,7 @@ const AdminCustomers = () => {
           <h1 className="font-luxury text-3xl font-bold text-primary">Customer Management</h1>
           <p className="text-muted-foreground">Manage customer accounts, profiles, and service history.</p>
         </div>
-        <Button variant="luxury">
+        <Button variant="luxury" onClick={() => toast({ title: "Add New Customer", description: "Feature coming soon!" })}>
           <Plus className="w-4 h-4 mr-2" />
           Add New Customer
         </Button>
@@ -29,8 +31,8 @@ const AdminCustomers = () => {
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search customers..." className="pl-10" />
           </div>
-          <Button variant="outline">Filter</Button>
-          <Button variant="outline">Export</Button>
+          <Button variant="outline" onClick={() => toast({ title: "Filter Customers", description: "Filter functionality coming soon!" })}>Filter</Button>
+          <Button variant="outline" onClick={() => toast({ title: "Export Data", description: "Export functionality coming soon!" })}>Export</Button>
         </div>
       </Card>
 
@@ -44,6 +46,12 @@ const AdminCustomers = () => {
                 <Activity className="w-12 h-12 text-accent mx-auto mb-4 animate-spin" />
                 <p className="text-lg text-muted-foreground mb-2">Loading customers...</p>
                 <p className="text-sm text-muted-foreground">Please wait while we fetch customer data</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-12">
+                <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
+                <p className="text-lg text-muted-foreground mb-2">Failed to load customers</p>
+                <p className="text-sm text-muted-foreground">Please check your connection and try again</p>
               </div>
             ) : customers.length > 0 ? (
               customers.map((customer) => (
@@ -78,7 +86,7 @@ const AdminCustomers = () => {
                           {customer.status}
                         </Badge>
                       </div>
-                      <Button variant="ghost" size="sm">View Details</Button>
+                      <Button variant="ghost" size="sm" onClick={() => toast({ title: "Customer Details", description: "Customer profile page coming soon!" })}>View Details</Button>
                     </div>
                   </div>
                 </div>
@@ -88,7 +96,7 @@ const AdminCustomers = () => {
                 <Users className="w-16 h-16 text-accent mx-auto mb-4" />
                 <p className="text-lg text-muted-foreground mb-2">No customers found</p>
                 <p className="text-sm text-muted-foreground mb-6">Customer accounts will appear here when users register</p>
-                <Button variant="luxury">
+                <Button variant="luxury" onClick={() => toast({ title: "Add New Customer", description: "Customer creation form coming soon!" })}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add New Customer
                 </Button>

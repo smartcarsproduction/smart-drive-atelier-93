@@ -16,6 +16,7 @@ import {
   ArrowUp,
   ArrowDown
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import {
   ResponsiveContainer,
   LineChart,
@@ -36,6 +37,7 @@ const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'
 const AdminAnalytics = () => {
   const [period, setPeriod] = useState('30');
   const [groupBy, setGroupBy] = useState('day');
+  const { toast } = useToast();
 
   // Fetch analytics data
   const { data: overview, isLoading: overviewLoading } = useQuery({
@@ -94,7 +96,7 @@ const AdminAnalytics = () => {
               <SelectItem value="365">1 year</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="luxury" data-testid="button-generate-report">Generate Report</Button>
+          <Button variant="luxury" data-testid="button-generate-report" onClick={() => toast({ title: "Generate Report", description: "Custom report generation coming soon!" })}>Generate Report</Button>
         </div>
       </div>
 

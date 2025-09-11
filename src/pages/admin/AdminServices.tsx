@@ -4,9 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Car, Search, Plus, Settings, Clock, Activity, AlertTriangle } from "lucide-react";
 import { useAdminServices } from "@/lib/admin-hooks";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminServices = () => {
   const { data: services = [], isLoading, error } = useAdminServices();
+  const { toast } = useToast();
 
   return (
     <div className="space-y-6">
@@ -15,7 +17,7 @@ const AdminServices = () => {
           <h1 className="font-luxury text-3xl font-bold text-primary">Service Management</h1>
           <p className="text-muted-foreground">Manage available services, pricing, and configurations.</p>
         </div>
-        <Button variant="luxury">
+        <Button variant="luxury" onClick={() => toast({ title: "Add New Service", description: "Service creation form coming soon!" })}>
           <Plus className="w-4 h-4 mr-2" />
           Add New Service
         </Button>
@@ -27,8 +29,8 @@ const AdminServices = () => {
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search services..." className="pl-10" />
           </div>
-          <Button variant="outline">Filter</Button>
-          <Button variant="outline">Categories</Button>
+          <Button variant="outline" onClick={() => toast({ title: "Filter Services", description: "Service filters coming soon!" })}>Filter</Button>
+          <Button variant="outline" onClick={() => toast({ title: "Service Categories", description: "Category management coming soon!" })}>Categories</Button>
         </div>
       </Card>
 
@@ -74,7 +76,7 @@ const AdminServices = () => {
                           {service.status}
                         </Badge>
                       </div>
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" onClick={() => toast({ title: "Manage Service", description: "Service management panel coming soon!" })}>
                         <Settings className="w-4 h-4" />
                       </Button>
                     </div>
@@ -86,7 +88,7 @@ const AdminServices = () => {
                 <Car className="w-16 h-16 text-accent mx-auto mb-4" />
                 <p className="text-lg text-muted-foreground mb-2">No services configured</p>
                 <p className="text-sm text-muted-foreground mb-6">Add your first service to get started</p>
-                <Button variant="luxury">
+                <Button variant="luxury" onClick={() => toast({ title: "Add New Service", description: "Service creation form coming soon!" })}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add New Service
                 </Button>
