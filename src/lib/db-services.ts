@@ -355,6 +355,11 @@ export class NotificationService {
       .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
     return result.length;
   }
+
+  static async getById(id: string): Promise<Notification | null> {
+    const [notification] = await db.select().from(notifications).where(eq(notifications.id, id));
+    return notification || null;
+  }
 }
 
 // Service History Services

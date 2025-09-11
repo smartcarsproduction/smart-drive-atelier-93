@@ -90,7 +90,17 @@ router.post('/', requireAdmin, async (req, res) => {
 // Mark notification as read (authenticated users only)
 router.patch('/:id/read', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
-    // TODO: Add check to ensure user can only mark their own notifications as read
+    // First, verify the notification belongs to the current user or user is admin
+    const notification = await NotificationService.getById(req.params.id);
+    if (!notification) {
+      return res.status(404).json({ error: 'Notification not found' });
+    }
+    
+    // Only allow users to mark their own notifications as read, or admins can mark any
+    if (req.user!.role !== 'admin' && notification.userId !== req.user!.id) {
+      return res.status(403).json({ error: 'Cannot mark other user\'s notification as read' });
+    }
+    
     await NotificationService.markAsRead(req.params.id);
     res.status(204).send();
   } catch (error) {

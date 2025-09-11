@@ -137,9 +137,21 @@ router.post('/google-auth', async (req, res) => {
       return res.status(400).json({ error: 'Email and name are required' });
     }
 
+    // Check rate limiting for OAuth endpoint
+    const rateLimit = SecurityUtils.checkRateLimit(`oauth_${req.ip || 'unknown'}`, 10, 10 * 60 * 1000); // 10 attempts per 10 minutes
+    if (!rateLimit.allowed) {
+      return res.status(429).json({
+        error: 'Too many OAuth attempts',
+        resetTime: new Date(rateLimit.resetTime).toISOString()
+      });
+    }
+
     const user = await UserService.getOrCreateFromGoogle({ email, name, picture });
     const sanitizedUser = UserService.sanitizeUser(user);
     const authResponse = AuthResponse.success(sanitizedUser);
+    
+    // Clear rate limit on successful OAuth
+    SecurityUtils.clearRateLimit(`oauth_${req.ip || 'unknown'}`);
     
     res.json(authResponse);
   } catch (error) {
@@ -156,15 +168,37 @@ router.post('/refresh-token', async (req, res) => {
       return res.status(401).json({ error: 'Refresh token required' });
     }
 
+    // Check rate limiting for refresh token endpoint
+    const rateLimit = SecurityUtils.checkRateLimit(`refresh_${req.ip || 'unknown'}`, 10, 5 * 60 * 1000); // 10 attempts per 5 minutes
+    if (!rateLimit.allowed) {
+      return res.status(429).json({
+        error: 'Too many refresh token attempts',
+        resetTime: new Date(rateLimit.resetTime).toISOString()
+      });
+    }
+
     const decoded = TokenUtils.verifyToken(refreshToken);
-    if (decoded.type !== 'refresh') {
-      return res.status(401).json({ error: 'Invalid refresh token' });
+    
+    // Validate that this is actually a refresh token
+    if (!decoded.type || decoded.type !== 'refresh') {
+      return res.status(401).json({ error: 'Invalid refresh token type' });
+    }
+
+    // Check if the refresh token is not too old (additional security)
+    if (decoded.iat) {
+      const tokenAge = Date.now() / 1000 - decoded.iat;
+      if (tokenAge > 7 * 24 * 60 * 60) { // 7 days
+        return res.status(401).json({ error: 'Refresh token expired' });
+      }
     }
 
     const user = await UserService.findById(decoded.sub as string);
     if (!user || !user.isActive) {
       return res.status(401).json({ error: 'User not found or inactive' });
     }
+
+    // Clear rate limit on successful refresh
+    SecurityUtils.clearRateLimit(`refresh_${req.ip || 'unknown'}`);
 
     const sanitizedUser = UserService.sanitizeUser(user);
     const authResponse = AuthResponse.success(sanitizedUser);
