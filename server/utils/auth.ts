@@ -209,14 +209,16 @@ export class AuthResponse {
 // Security utilities
 export class SecurityUtils {
   /**
-   * Generate a secure random string for various uses
+   * Generate a cryptographically secure random string for various uses
    */
   static generateSecureRandom(length: number = 32): string {
+    const crypto = require('crypto');
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     
+    const randomBytes = crypto.randomBytes(length);
     for (let i = 0; i < length; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
+      result += chars.charAt(randomBytes[i] % chars.length);
     }
     
     return result;
