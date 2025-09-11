@@ -14,6 +14,7 @@ import SignUp from "./pages/SignUp";
 import Booking from "./pages/Booking";
 import BookingConfirmation from "./pages/BookingConfirmation";
 import Dashboard from "./pages/Dashboard";
+import VehicleManagement from "./pages/VehicleManagement";
 import Contact from "./pages/Contact";
 import AdminDashboard from "./pages/AdminDashboard";
 import ServiceDetail from "./pages/ServiceDetail";
@@ -46,6 +47,11 @@ const App = () => (
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/vehicles" element={
+              <ProtectedRoute>
+                <VehicleManagement />
               </ProtectedRoute>
             } />
             <Route path="/contact" element={<Contact />} />

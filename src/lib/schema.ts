@@ -30,6 +30,7 @@ export const vehicles = pgTable('vehicles', {
   transmission: text('transmission'), // automatic, manual
   engineSize: text('engine_size'),
   notes: text('notes'), // Special notes about the vehicle
+  nextServiceDue: timestamp('next_service_due'), // When the next service is due
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
@@ -66,6 +67,7 @@ export const bookings = pgTable('bookings', {
   pickupAddress: text('pickup_address'), // For pickup/delivery services
   deliveryAddress: text('delivery_address'),
   priority: text('priority').default('normal'), // 'low', 'normal', 'high', 'urgent'
+  completionCallTriggered: boolean('completion_call_triggered').default(false), // Track if voice call was made
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -107,6 +109,20 @@ export const notifications = pgTable('notifications', {
   isRead: boolean('is_read').default(false),
   relatedBookingId: uuid('related_booking_id').references(() => bookings.id),
   createdAt: timestamp('created_at').defaultNow(),
+});
+
+// Time slots table - for booking availability management
+export const timeSlots = pgTable('time_slots', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  date: timestamp('date').notNull(), // The date of the time slot
+  startTime: text('start_time').notNull(), // Start time (e.g., "09:00")
+  endTime: text('end_time').notNull(), // End time (e.g., "10:00")
+  isAvailable: boolean('is_available').default(true),
+  bookedBy: uuid('booked_by').references(() => bookings.id), // Reference to booking if slot is taken
+  maxCapacity: integer('max_capacity').default(1), // How many bookings this slot can handle
+  currentBookings: integer('current_bookings').default(0), // Current number of bookings
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 
 // Define relationships for better querying
@@ -180,6 +196,13 @@ export const notificationsRelations = relations(notifications, ({ one }) => ({
   }),
 }));
 
+export const timeSlotsRelations = relations(timeSlots, ({ one }) => ({
+  booking: one(bookings, {
+    fields: [timeSlots.bookedBy],
+    references: [bookings.id],
+  }),
+}));
+
 // Export types for TypeScript
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -195,3 +218,5 @@ export type Content = typeof content.$inferSelect;
 export type NewContent = typeof content.$inferInsert;
 export type Notification = typeof notifications.$inferSelect;
 export type NewNotification = typeof notifications.$inferInsert;
+export type TimeSlot = typeof timeSlots.$inferSelect;
+export type NewTimeSlot = typeof timeSlots.$inferInsert;

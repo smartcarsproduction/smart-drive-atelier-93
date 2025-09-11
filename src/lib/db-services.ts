@@ -1,6 +1,6 @@
 import { db } from '../../server/lib/database';
-import { users, vehicles, services, bookings, serviceHistory, content, notifications } from './schema';
-import { eq, and, desc, asc } from 'drizzle-orm';
+import { users, vehicles, services, bookings, serviceHistory, content, notifications, timeSlots } from './schema';
+import { eq, and, desc, asc, gte, lte, lt } from 'drizzle-orm';
 import type { 
   User, NewUser, 
   Vehicle, NewVehicle, 
@@ -8,7 +8,8 @@ import type {
   Booking, NewBooking,
   ServiceHistoryRecord, NewServiceHistoryRecord,
   Content, NewContent,
-  Notification, NewNotification
+  Notification, NewNotification,
+  TimeSlot, NewTimeSlot
 } from './schema';
 import { PasswordUtils } from '../../server/utils/auth';
 
@@ -254,10 +255,11 @@ export class BookingService {
     return booking || null;
   }
 
-  static async updateStatus(id: string, status: string, notes?: string): Promise<Booking> {
+  static async updateStatus(id: string, status: string, notes?: string, completionCallTriggered?: boolean): Promise<Booking> {
     const updateData: any = { status, updatedAt: new Date() };
     if (notes) updateData.technicianNotes = notes;
     if (status === 'completed') updateData.actualCompletion = new Date();
+    if (completionCallTriggered !== undefined) updateData.completionCallTriggered = completionCallTriggered;
 
     const [booking] = await db.update(bookings)
       .set(updateData)
@@ -275,6 +277,25 @@ export class BookingService {
     return await db.select().from(bookings)
       .where(eq(bookings.status, status))
       .orderBy(desc(bookings.scheduledDate));
+  }
+
+  static async findByVehicleId(vehicleId: string): Promise<Booking[]> {
+    return await db.select().from(bookings)
+      .where(eq(bookings.vehicleId, vehicleId))
+      .orderBy(desc(bookings.scheduledDate));
+  }
+
+  static async getUpcomingBookingsForVehicle(vehicleId: string): Promise<Booking[]> {
+    const now = new Date();
+    return await db.select().from(bookings)
+      .where(
+        and(
+          eq(bookings.vehicleId, vehicleId),
+          gte(bookings.scheduledDate, now),
+          eq(bookings.status, 'confirmed')
+        )
+      )
+      .orderBy(asc(bookings.scheduledDate));
   }
 }
 

@@ -6,6 +6,7 @@ import {
   requireAdmin,
   AuthenticatedRequest 
 } from '../middleware/auth';
+import { makeCompletionVoiceCall } from '../utils/twilio';
 
 const router = Router();
 
@@ -77,6 +78,56 @@ router.get('/my-bookings', authenticateToken, async (req: AuthenticatedRequest, 
   }
 });
 
+// Get bookings by vehicle ID (vehicle owner or admin only)
+router.get('/vehicle/:vehicleId', authenticateToken, async (req: AuthenticatedRequest, res) => {
+  try {
+    // Check vehicle ownership first (if not admin)
+    if (req.user!.role !== 'admin') {
+      const { VehicleService } = await import('../../src/lib/db-services');
+      const vehicle = await VehicleService.findById(req.params.vehicleId);
+      
+      if (!vehicle) {
+        return res.status(404).json({ error: 'Vehicle not found' });
+      }
+      
+      if (vehicle.userId !== req.user!.id) {
+        return res.status(403).json({ error: 'Cannot access other user\'s vehicle bookings' });
+      }
+    }
+    
+    const bookings = await BookingService.findByVehicleId(req.params.vehicleId);
+    res.json(bookings);
+  } catch (error) {
+    console.error('Error fetching vehicle bookings:', error);
+    res.status(500).json({ error: 'Failed to fetch vehicle bookings' });
+  }
+});
+
+// Get upcoming bookings by vehicle ID (vehicle owner or admin only) 
+router.get('/vehicle/:vehicleId/upcoming', authenticateToken, async (req: AuthenticatedRequest, res) => {
+  try {
+    // Check vehicle ownership first (if not admin)
+    if (req.user!.role !== 'admin') {
+      const { VehicleService } = await import('../../src/lib/db-services');
+      const vehicle = await VehicleService.findById(req.params.vehicleId);
+      
+      if (!vehicle) {
+        return res.status(404).json({ error: 'Vehicle not found' });
+      }
+      
+      if (vehicle.userId !== req.user!.id) {
+        return res.status(403).json({ error: 'Cannot access other user\'s vehicle bookings' });
+      }
+    }
+    
+    const bookings = await BookingService.getUpcomingBookingsForVehicle(req.params.vehicleId);
+    res.json(bookings);
+  } catch (error) {
+    console.error('Error fetching upcoming vehicle bookings:', error);
+    res.status(500).json({ error: 'Failed to fetch upcoming vehicle bookings' });
+  }
+});
+
 // Get booking by ID (owner or admin only)
 router.get('/:id', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
@@ -145,7 +196,48 @@ router.patch('/:id/status', authenticateToken, async (req: AuthenticatedRequest,
     }
 
     const { status, technicianNotes } = updateBookingStatusSchema.parse(req.body);
+    
+    // Get the current booking before update to check if voice call was already triggered
+    const currentBooking = await BookingService.findById(req.params.id);
+    if (!currentBooking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    // For completion status, handle voice call atomically to prevent duplicates
+    if (status === 'completed' && !currentBooking.completionCallTriggered) {
+      try {
+        // First, mark the completion call as triggered atomically with the status update
+        const booking = await BookingService.updateStatus(req.params.id, status, technicianNotes, true);
+        
+        // Get user details for phone number
+        const { UserService } = await import('../../src/lib/db-services');
+        const user = await UserService.findById(booking.userId);
+        
+        if (user && user.phone) {
+          console.log(`Triggering completion voice call for booking ${booking.id}`);
+          const callSuccess = await makeCompletionVoiceCall({
+            to: user.phone,
+            bookingId: booking.id,
+          });
+          
+          if (!callSuccess) {
+            console.log(`Voice call failed for booking ${booking.id}, but status remains completed`);
+          }
+        } else {
+          console.log(`No phone number available for user ${booking.userId}, skipping voice call`);
+        }
+        
+        res.json(booking);
+        return;
+      } catch (callError) {
+        console.error('Error triggering completion voice call:', callError);
+        // Status and call trigger flag were already updated, continue normally
+      }
+    }
+    
+    // Normal status update (not completion or already triggered)
     const booking = await BookingService.updateStatus(req.params.id, status, technicianNotes);
+    
     res.json(booking);
   } catch (error) {
     if (error instanceof z.ZodError) {
