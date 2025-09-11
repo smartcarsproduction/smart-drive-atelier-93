@@ -14,19 +14,26 @@ export function RoleBasedRedirect({ children }: RoleBasedRedirectProps) {
     // Wait for auth to finish loading
     if (isLoading) return;
 
+    // Debug logging - remove after testing
+    console.log('RoleBasedRedirect - User data:', user);
+    console.log('RoleBasedRedirect - User role:', user?.role);
+
     // If user is authenticated and is admin, redirect to admin dashboard
     if (user && user.role === 'admin') {
+      console.log('Redirecting admin user to /admin');
       navigate('/admin', { replace: true });
       return;
     }
 
     // If user is authenticated but not admin, stay on current page
     if (user && user.role !== 'admin') {
+      console.log('User is not admin, staying on current page');
       return;
     }
 
     // If no user, redirect to login
     if (!user) {
+      console.log('No user found, redirecting to login');
       navigate('/login', { replace: true });
       return;
     }
