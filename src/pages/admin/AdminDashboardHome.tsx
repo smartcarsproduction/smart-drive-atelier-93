@@ -14,11 +14,16 @@ import {
   Bell,
   FileText
 } from "lucide-react";
-import { useAdminStats, useRecentBookings } from "@/lib/admin-hooks";
+// import { useAdminStats, useRecentBookings } from "@/lib/admin-hooks";
 
 const AdminDashboardHome = () => {
-  const { data: stats = [], isLoading: statsLoading } = useAdminStats();
-  const { data: recentBookings = [], isLoading: bookingsLoading } = useRecentBookings(5);
+  // Temporarily disable data fetching to prevent logout cycle
+  // const { data: stats = [], isLoading: statsLoading } = useAdminStats();
+  // const { data: recentBookings = [], isLoading: bookingsLoading } = useRecentBookings(5);
+  const stats = [];
+  const recentBookings = [];
+  const statsLoading = false;
+  const bookingsLoading = false;
 
   // Icon mapping for stats
   const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
