@@ -2,19 +2,13 @@
 
 // Environment-aware API URL configuration
 const getApiBaseUrl = () => {
-  // If VITE_API_URL is explicitly set, use it (allows custom deployments)
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
+  // In browser, always use relative URLs to leverage Vite proxy and avoid CORS issues
+  if (typeof window !== 'undefined') {
+    return '';
   }
 
   // Handle server-side rendering or non-browser environments
-  if (typeof window === 'undefined') {
-    return import.meta.env.DEV ? 'http://localhost:3001' : '';
-  }
-
-  // Browser environment: use same origin for Replit compatibility
-  // In Replit, both frontend and backend are served through the same port
-  return window.location.origin;
+  return import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
 };
 
 const API_BASE_URL = getApiBaseUrl();
