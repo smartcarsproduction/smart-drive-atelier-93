@@ -5,6 +5,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET environment variable is required for security');
 }
+
+// Type assertion since we've confirmed JWT_SECRET exists above
+const SECRET: string = JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 const BCRYPT_ROUNDS = 12;
 
@@ -93,7 +96,7 @@ export class TokenUtils {
         role: payload.role,
         iat: Math.floor(Date.now() / 1000),
       },
-      JWT_SECRET,
+      SECRET,
       {
         expiresIn: JWT_EXPIRES_IN,
         issuer: 'smart-cars-elite',
@@ -112,7 +115,7 @@ export class TokenUtils {
         type: 'refresh',
         iat: Math.floor(Date.now() / 1000),
       },
-      JWT_SECRET,
+      SECRET,
       {
         expiresIn: '7d',
         issuer: 'smart-cars-elite',
@@ -125,7 +128,7 @@ export class TokenUtils {
    * Verify and decode a JWT token
    */
   static verifyToken(token: string): jwt.JwtPayload {
-    return jwt.verify(token, JWT_SECRET, {
+    return jwt.verify(token, SECRET, {
       issuer: 'smart-cars-elite',
       audience: 'smart-cars-users',
     }) as jwt.JwtPayload;
