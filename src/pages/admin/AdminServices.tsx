@@ -2,17 +2,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Car, Search, Plus, Settings, Clock } from "lucide-react";
+import { Car, Search, Plus, Settings, Clock, Activity, AlertTriangle } from "lucide-react";
+import { useAdminServices } from "@/lib/admin-hooks";
 
 const AdminServices = () => {
-  const services: Array<{
-    id: number;
-    name: string;
-    description: string;
-    price: string;
-    duration: string;
-    status: string;
-  }> = [];
+  const { data: services = [], isLoading, error } = useAdminServices();
 
   return (
     <div className="space-y-6">
@@ -42,7 +36,19 @@ const AdminServices = () => {
         <div className="p-6">
           <h2 className="font-luxury text-xl font-bold text-primary mb-4">Available Services</h2>
           <div className="space-y-4">
-            {services.length > 0 ? (
+            {isLoading ? (
+              <div className="text-center py-12">
+                <Activity className="w-12 h-12 text-accent mx-auto mb-4 animate-spin" />
+                <p className="text-lg text-muted-foreground mb-2">Loading services...</p>
+                <p className="text-sm text-muted-foreground">Please wait while we fetch service data</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-12">
+                <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
+                <p className="text-lg text-muted-foreground mb-2">Failed to load services</p>
+                <p className="text-sm text-muted-foreground">Please check your connection and try again</p>
+              </div>
+            ) : services.length > 0 ? (
               services.map((service) => (
                 <div key={service.id} className="p-4 bg-card-luxury rounded-luxury hover:shadow-elegant transition-luxury">
                   <div className="flex items-center justify-between">

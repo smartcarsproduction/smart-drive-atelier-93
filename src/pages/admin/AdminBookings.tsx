@@ -2,18 +2,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Calendar, Search, Plus, Clock, Car, User } from "lucide-react";
+import { Calendar, Search, Plus, Clock, Car, User, Activity, AlertTriangle } from "lucide-react";
+import { useAdminBookings } from "@/lib/admin-hooks";
 
 const AdminBookings = () => {
-  const bookings: Array<{
-    id: string;
-    customer: string;
-    service: string;
-    date: string;
-    time: string;
-    vehicle: string;
-    status: string;
-  }> = [];
+  const { data: bookings = [], isLoading, error } = useAdminBookings();
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -46,7 +39,19 @@ const AdminBookings = () => {
         <div className="p-4 sm:p-6">
           <h2 className="font-luxury text-lg sm:text-xl font-bold text-primary mb-4">Service Appointments</h2>
           <div className="space-y-3 sm:space-y-4">
-            {bookings.length > 0 ? (
+            {isLoading ? (
+              <div className="text-center py-12">
+                <Activity className="w-12 h-12 text-accent mx-auto mb-4 animate-spin" />
+                <p className="text-lg text-muted-foreground mb-2">Loading bookings...</p>
+                <p className="text-sm text-muted-foreground">Please wait while we fetch booking data</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-12">
+                <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
+                <p className="text-lg text-muted-foreground mb-2">Failed to load bookings</p>
+                <p className="text-sm text-muted-foreground">Please check your connection and try again</p>
+              </div>
+            ) : bookings.length > 0 ? (
               bookings.map((booking) => (
                 <div key={booking.id} className="p-4 bg-card-luxury rounded-luxury hover:shadow-elegant transition-luxury">
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
