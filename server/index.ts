@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { userRoutes } from './routes/users';
 import { vehicleRoutes } from './routes/vehicles';
 import { serviceRoutes } from './routes/services';
@@ -11,11 +13,19 @@ import { serviceHistoryRoutes } from './routes/serviceHistory';
 import { analyticsRoutes } from './routes/analytics';
 import { timeSlotsRoutes } from './routes/timeSlots';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL 
+    : ['http://localhost:5000', 'http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -29,6 +39,20 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/service-history', serviceHistoryRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/time-slots', timeSlotsRoutes);
+
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')));
+  
+  // Handle React Router - send all non-API requests to index.html
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(__dirname, '../dist/index.html'));
+    } else {
+      res.status(404).json({ error: 'API endpoint not found' });
+    }
+  });
+}
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
