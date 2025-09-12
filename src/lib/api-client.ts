@@ -2,13 +2,18 @@
 
 // Environment-aware API URL configuration
 const getApiBaseUrl = () => {
-  // In browser, always use relative URLs to leverage Vite proxy and avoid CORS issues
+  // In production, use relative URLs since backend serves frontend
+  if (import.meta.env.PROD) {
+    return '';
+  }
+  
+  // In browser during development, always use relative URLs to leverage Vite proxy
   if (typeof window !== 'undefined') {
     return '';
   }
 
-  // Handle server-side rendering or non-browser environments
-  return import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+  // Handle server-side rendering or non-browser environments in development
+  return import.meta.env.VITE_API_URL || 'http://localhost:3001';
 };
 
 const API_BASE_URL = getApiBaseUrl();
