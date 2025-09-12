@@ -81,25 +81,35 @@ Once deployed, test these key features:
 - [x] Admin buttons providing feedback
 - [x] Error handling in place
 
-### 7. Troubleshooting
+### 7. Security Notes
+
+**Authentication Storage:**
+- Access tokens: Stored in localStorage (short-lived)
+- Refresh tokens: Currently in localStorage (consider HttpOnly cookies for enhanced security)
+- JWT secrets: Use environment variables, never commit to code
+
+### 8. Troubleshooting
 
 **If deployment fails:**
 1. Check build logs in Render dashboard
 2. Verify environment variables are set correctly
 3. Ensure database URL is the internal URL
-4. Check that all dependencies are in package.json
+4. Check that TypeScript compilation succeeded
+5. Verify database migrations applied successfully
 
 **If app doesn't load:**
 1. Check runtime logs for errors
-2. Verify frontend assets are being served
-3. Check CORS configuration
+2. Verify frontend assets are being served from /dist
+3. Check CORS configuration matches FRONTEND_URL
 4. Ensure database connection is working
+5. Test health endpoint: `/api/health`
 
 **API Issues:**
 - Check `/api/health` endpoint first
 - Verify database migrations ran successfully  
 - Check authentication endpoints
 - Test CRUD operations
+- Verify JWT_SECRET is properly set
 
 ### 8. Environment Variables Reference
 

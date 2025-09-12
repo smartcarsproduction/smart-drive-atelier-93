@@ -98,11 +98,6 @@ async function apiRequest<T>(
       
       if (refreshToken && !TokenManager.isTokenExpired(refreshToken)) {
         try {
-          // Debug logging
-          console.log('Attempting token refresh...');
-          console.log('Refresh token exists:', !!refreshToken);
-          console.log('Refresh token length:', refreshToken.length);
-          
           // Attempt to refresh the token
           const refreshResponse = await fetch(`${API_BASE_URL}/api/users/refresh-token`, {
             method: 'POST',
