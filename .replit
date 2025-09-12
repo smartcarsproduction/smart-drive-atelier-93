@@ -6,9 +6,9 @@ expertMode = true
 channel = "stable-25_05"
 
 [deployment]
-deploymentTarget = "autoscale"
-run = ["npm", "run", "preview"]
-build = ["npm", "run", "build"]
+deploymentTarget = "vm"
+run = ["bun", "run", "dev:server"]
+build = ["bun", "install", "&&", "bun", "run", "build"]
 
 [workflows]
 runButton = "Project"
